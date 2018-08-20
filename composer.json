@@ -1,0 +1,23 @@
+{
+  "name": "d3yii2/d3system",
+  "description": "Yii2 system",
+  "keywords": ["Yii2","system"],
+  "license": "BSD-4-Clause",
+  "authors": [
+    {
+      "name": "Uldis Nelsons",
+      "email": "uldis@weberp.lv"
+    }
+  ],
+
+  "homepage": "https://github.com/d3yii2/d3system",
+  "require": {
+    "php": ">=5.4.0",
+    "yiisoft/yii2": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "d3system\\": ""
+    }
+  }
+}
