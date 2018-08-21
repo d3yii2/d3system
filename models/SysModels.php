@@ -35,7 +35,7 @@ class SysModels extends \yii\db\ActiveRecord
     public static function getTableNameIdList(string $cacheKey, int $cacheDuration): array
     {
 
-        $list =  ArrayHelper::map(self::findAll(),'table_name','id');
+        $list =  ArrayHelper::map(self::find()->asArray()->all(),'table_name','id');
         \Yii::$app->cache->set($cacheKey, $list, $cacheDuration);
         return $list;
     }

@@ -35,8 +35,8 @@ class ModelsList extends Component
 
     public function getIdByTableName($model): int
     {
-        if (isset($this->list[$model->tableName])) {
-            return $this->list[$model->tableName];
+        if (isset($this->list[$model->tableName()])) {
+            return $this->list[$model->tableName()];
         }
         SysModels::addRecord($model);
         $this->loadListFromDb();
@@ -47,6 +47,5 @@ class ModelsList extends Component
     private function loadListFromDb()
     {
         $this->list = SysModels::getTableNameIdList($this->cacheKey, $this->cacheDuration);
-
     }
 }
