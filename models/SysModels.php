@@ -2,7 +2,7 @@
 
 namespace d3system\models;
 
-use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "sys_models".
@@ -32,15 +32,20 @@ class SysModels extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public static function getTableNameIdList(string $cacheKey, int $cacheDuration): array
     {
-        return [
-            'id' => 'ID',
-            'table_name' => 'Table Name',
-            'class_name' => 'Class Name',
-        ];
+
+        $list =  ArrayHelper::map(self::findAll(),'table_name','id');
+        \Yii::$app->cache->set($cacheKey, $list, $cacheDuration);
+        return $list;
     }
+
+    public static function addRecord($model)
+    {
+        $record = new self();
+        $record->table_name = $model->tableName();
+        $record->class_name = get_class($model);
+        $record->save();
+    }
+
 }
