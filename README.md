@@ -1,17 +1,16 @@
-#d3system
+# d3system
 
-##Installation
+## Installation
 
 ```bash
-composer require schmunk42/yii2-giiant:"@dev"
+composer require d3yii2/d3system dev-master
 ```
 
-
-##Compnents
-
+## Compnents
 
 
-###ModelsList
+
+### ModelsList
 
 Configuration:
 ```php
