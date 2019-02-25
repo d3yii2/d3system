@@ -28,6 +28,7 @@ class SysModels extends \yii\db\ActiveRecord
     {
         return [
             [['table_name'], 'required'],
+            [['table_name', 'class_name'], 'unique', 'targetAttribute' => ['table_name', 'class_name']],
             [['table_name', 'class_name'], 'string', 'max' => 256],
         ];
     }
