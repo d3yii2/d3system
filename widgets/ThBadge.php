@@ -25,7 +25,7 @@ class ThBadge extends Widget
     public $type = false;
     public $faIcon = false;
     public $text = '';
-    public $renderOptions = [];
+    public $showText = true;
     public $badgeHtmlOptions = [];
 
     /**
@@ -42,7 +42,7 @@ class ThBadge extends Widget
         if (!empty($this->faIcon)) {
             $content .= '<i class="fa ' . $this->faIcon . '"></i>';
 
-            if (!empty($this->renderOptions['iconsWithText'])) {
+            if ($this->showText) {
                 $content .= ' ' . $this->text;
             }
         } else {

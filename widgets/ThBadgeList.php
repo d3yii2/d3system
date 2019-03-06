@@ -10,6 +10,7 @@ class ThBadgeList extends ThBadge
 {
     public $items = [];
     public $separator = ' ';
+    public $renderOptions = [];
 
     /**
      * @return string|void
