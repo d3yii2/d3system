@@ -2,6 +2,7 @@
 
 namespace d3system\models;
 
+use d3system\exceptions\D3ActiveRecordException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -41,12 +42,14 @@ class SysModels extends \yii\db\ActiveRecord
         return $list;
     }
 
-    public static function addRecord($model)
+    public static function addRecord($model): void
     {
         $record = new self();
         $record->table_name = $model->tableName();
         $record->class_name = get_class($model);
-        $record->save();
+        if(!$record->save()){
+            throw new D3ActiveRecordException($record);
+        }
     }
 
 }

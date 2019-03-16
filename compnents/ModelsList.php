@@ -44,7 +44,7 @@ class ModelsList extends Component
         return $this->getIdByTableName($model);
     }
 
-    private function loadListFromDb()
+    private function loadListFromDb():void
     {
         $this->list = SysModels::getTableNameIdList($this->cacheKey, $this->cacheDuration);
     }
