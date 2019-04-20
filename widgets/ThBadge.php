@@ -22,62 +22,82 @@ class ThBadge extends Widget
     const TYPE_INVERSE = 'inverse';
     const TYPE_TEALS = 'teals';
 
-    public $type = false;
-    public $faIcon = false;
+    public $type;
+    public $faIcon;
     public $text = '';
     public $showText = true;
-    public $badgeHtmlOptions = [];
+    public $afterText;
+    public $htmlOptions = [];
+    public $title = '';
+    public $url;
 
     /**
      * @return string|void
      */
-    public function run()
+    public function run(): string
     {
         if (!$this->type) {
             $this->type = self::TYPE_WARNING;
         }
 
-        $content = '';
-
-        if (!empty($this->faIcon)) {
-            $content .= '<i class="fa ' . $this->faIcon . '"></i>';
-
-            if ($this->showText) {
-                $content .= ' ' . $this->text;
-            }
-        } else {
-            $content .= $this->text;
-        }
-
-        $this->badgeHtmlOptions = [
-            'class' => 'badge badge-' . $this->type,
-            'title' => $this->text,
-        ];
-
-        return $this->getBadge($content, $this->type, $this->badgeHtmlOptions);
+        return $this->getBadge();
     }
 
     /**
-     * @param string $content
-     * @param string $type
+     * @return array
      */
-    protected function getBadge(string $content, string $type, array $htmlOptions = [])
+    public function getDefaultOptions(): array
     {
-        return  Html::tag('span', $content, $htmlOptions);
+        return [
+            'type' => $this->type,
+            'faIcon' => $this->faIcon,
+            'text' => $this->text,
+            'showText' => $this->showText,
+            'afterText' => $this->afterText,
+            'title' => $this->title,
+            'url' => $this->url
+        ];
     }
 
     /**
-     * @param string $content
-     * @param string $type
-     * @param string $url
+     * @param array $options
+     * @param array $htmlOptions
      * @return string
      */
-    protected function getBadgeLink(string $content, string $type, string $url, array $badgeOptions = [])
+    protected function getBadge(array $options = [], array $htmlOptions = []): string
     {
-        $badge = Html::tag('span', $content, $badgeOptions);
+        $options = array_merge($this->getDefaultOptions(), $options);
 
-        $link = Html::a($badge, $url);
+        $htmlOptions = array_merge(
+            [
+                'class' => 'badge badge-' . $options['type'],
+                'title' => ! empty($options['title']) ? $options['title'] : $options['text'],
+            ],
+            $htmlOptions
+        );
 
-        return $link;
+        $label = '';
+
+        if (!empty($options['faIcon'])) {
+            $label .= '<i class="fa ' . $options['faIcon'] . '"></i> ';
+
+            if ($options['showText']) {
+                $label .= $options['text'];
+            }
+        } else {
+            $label .= $options['text'];
+        }
+
+        if (!empty($options['afterText'])) {
+            $label .= $options['afterText'];
+        }
+
+        $badgeContent = Html::tag('span', $label, $htmlOptions);
+
+        if (!empty($options['url'])) {
+            $badgeContent = $link = Html::a($badgeContent, $options['url']);
+        }
+
+        return$badgeContent;
     }
 }
