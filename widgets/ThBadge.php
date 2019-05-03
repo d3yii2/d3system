@@ -26,6 +26,7 @@ class ThBadge extends Widget
     public $faIcon;
     public $text = '';
     public $showText = true;
+    public $beforeText;
     public $afterText;
     public $htmlOptions = [];
     public $title = '';
@@ -53,6 +54,7 @@ class ThBadge extends Widget
             'faIcon' => $this->faIcon,
             'text' => $this->text,
             'showText' => $this->showText,
+            'beforeText' => $this->beforeText,
             'afterText' => $this->afterText,
             'title' => $this->title,
             'url' => $this->url
@@ -77,6 +79,10 @@ class ThBadge extends Widget
         );
 
         $label = '';
+
+        if (!empty($options['beforeText'])) {
+            $label .= $options['beforeText'];
+        }
 
         if (!empty($options['faIcon'])) {
             $label .= '<i class="fa ' . $options['faIcon'] . '"></i> ';
