@@ -25,6 +25,14 @@ class ThBadgeList extends ThBadge
                 $item['showText'] = true;
             }
 
+            if (!empty($this->renderOptions['beforeText'])) {
+                $item['beforeText'] = $this->renderOptions['beforeText'];
+            }
+
+            if (!empty($this->renderOptions['afterText'])) {
+                $item['afterText'] = $this->renderOptions['afterText'];
+            }
+
             $badges[] = $this->getBadge($item);
         }
 
