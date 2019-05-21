@@ -1,8 +1,8 @@
 <?php
 
-namespace d3yii2\d3system\models;
+namespace d3system\models;
 
-use \d3yii2\d3system\models\base\SysCronFinalPoint as BaseSysCronFinalPoint;
+use d3system\models\base\SysCronFinalPoint as BaseSysCronFinalPoint;
 
 /**
  * This is the model class for table "sys_cron_final_point".
