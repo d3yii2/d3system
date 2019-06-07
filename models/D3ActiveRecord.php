@@ -6,6 +6,7 @@ use d3system\exceptions\D3ActiveRecordException;
 use eaBlankonThema\components\FlashHelper;
 use d3system\exceptions\D3Exception;
 use yii\db\ActiveRecord;
+use yii\helpers\VarDumper;
 
 /**
  * Class D3ActiveRecord
@@ -22,9 +23,11 @@ class D3ActiveRecord extends ActiveRecord
     {
         if (!parent::load($data, $formName)) {
             throw new D3Exception(
-                'Unexpected Server error',
+                \Yii::t('d3system', 'Unexpected Server Error'),
                 'Cannot load data into model: ' . static::class . PHP_EOL
-                . PHP_EOL . 'Data: ' . print_r($data)
+                . PHP_EOL . 'Data: ' . VarDumper::dumpAsString($data)
+                . PHP_EOL . ' Errors: ' .  VarDumper::export($this->getErrors())
+                . PHP_EOL .  ' Attributes: ' . VarDumper::export($this->attributes)
             );
         }
     }
