@@ -61,11 +61,10 @@ class D3ActiveQuery extends ActiveQuery
     }
 
     /**
-     * @param ActiveQuery $query
      * @return string
      */
-    public static function getRawSql(ActiveQuery $query): string
+    public function getRawSql(): string
     {
-        return $query->createCommand()->getRawSql();
+        return $this->createCommand()->getRawSql();
     }
 }
