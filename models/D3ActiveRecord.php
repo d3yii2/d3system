@@ -56,6 +56,7 @@ class D3ActiveRecord extends ActiveRecord
     /**
      * {@inheritdoc}
      * @return D3ActiveQuery the newly created [[D3ActiveQuery ]] instance.
+     * @TODO - Lai uzdotu return tipu, jālabo ::find visos modeļos
      */
     public static function find()
     {
