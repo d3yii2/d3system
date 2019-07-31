@@ -3,7 +3,7 @@
 namespace d3system\models;
 
 use d3system\exceptions\D3ActiveRecordException;
-use eaBlankonThema\components\FlashHelper;
+use d3system\yii2\db\D3ActiveQuery;
 use d3system\exceptions\D3Exception;
 use yii\db\ActiveRecord;
 use yii\helpers\VarDumper;
@@ -50,5 +50,14 @@ class D3ActiveRecord extends ActiveRecord
             throw new D3ActiveRecordException($this, $flashMessage, $logMessage);
         }
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return D3ActiveQuery the newly created [[D3ActiveQuery ]] instance.
+     */
+    public static function find()
+    {
+        return \Yii::createObject(D3ActiveQuery::className(), [get_called_class()]);
     }
 }
