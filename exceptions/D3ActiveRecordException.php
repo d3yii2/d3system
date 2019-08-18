@@ -33,6 +33,7 @@ class D3ActiveRecordException extends Exception
             foreach ($model->getErrors() as $attribute => $attributeErrors){
                 foreach($attributeErrors as $error){
                     FlashHelper::addWarning($model->getAttributeLabel($attribute) . ': ' . $error);
+                    Yii::error($model->getAttributeLabel($attribute) . ': ' . $error, 'serverError');
                 }
             }
         }
