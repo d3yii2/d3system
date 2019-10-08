@@ -5,35 +5,59 @@ namespace d3system\exceptions;
 use eaBlankonThema\components\FlashHelper;
 use Yii;
 use yii\base\Exception;
+use yii\console\Application;
 use yii\db\ActiveRecord;
 use yii\helpers\VarDumper;
+use yii\log\Logger;
 
+/**
+ * Exception for logging and displaying in flash active record errors
+ * Class D3ActiveRecordException
+ * @package d3system\exceptions
+ */
 class D3ActiveRecordException extends Exception
 {
     /**
      * D3ModelException constructor.
      * @param ActiveRecord $model
-     * @param string $message
-     * @param string $flashMessage
+     * @param string $flashMessage message for displaying in flash
+     * @param string|false $loggingMessage logging message. If false, do not log
+     * @param array|bool $flashAttributes list attributes for displaying in flash. If false, do not show. If true, show all
      */
     public function __construct(
         $model,
-        string $flashMessage = 'Database error',
-        string $message = '',
-        bool $flashModelErrors = false
+        string $flashMessage = null,
+        string $loggingMessage = '',
+         $flashAttributes = false
+
     )
     {
-        $message = 'Can\'t save ' . get_class($model) . PHP_EOL
-            . ' Message: ' . ($message?:$flashMessage)  . PHP_EOL
-            . ' Errors: ' .  VarDumper::export($model->getErrors()) . PHP_EOL
-           .  ' Attributes: ' . VarDumper::export($model->attributes);
 
-        Yii::error($message, 'serverError');
-        if($flashModelErrors){
-            foreach ($model->getErrors() as $attribute => $attributeErrors){
-                foreach($attributeErrors as $error){
-                    FlashHelper::addWarning($model->getAttributeLabel($attribute) . ': ' . $error);
-                    Yii::error($model->getAttributeLabel($attribute) . ': ' . $error, 'serverError');
+        if (!$flashMessage) {
+            $flashMessage = Yii::t('d3system', 'Database error');
+        }
+
+        if ($loggingMessage !== false) {
+            Yii::error($flashMessage, 'ActiveRecord');
+            if ($loggingMessage) {
+                Yii::error($loggingMessage, 'ActiveRecord');
+            }
+
+            $modelErrors = 'Can\'t save ' . get_class($model) . PHP_EOL
+                . ' Message: ' . ($loggingMessage ?: $flashMessage) . PHP_EOL
+                . ' Errors: ' . VarDumper::export($model->getErrors()) . PHP_EOL
+                . ' Attributes: ' . VarDumper::export($model->attributes);
+            Yii::error($modelErrors, 'ActiveRecord');
+            $logger = Yii::getLogger();
+            $logger->log($modelErrors, Logger::LEVEL_TRACE, 'ActiveRecord');
+        }
+        if ($flashAttributes && !Yii::$app instanceof Application ) {
+            foreach ($model->getErrors() as $attribute => $attributeErrors) {
+                if (!is_array($flashAttributes) || isset($flashAttributes[$attribute])) {
+                    foreach ($attributeErrors as $error) {
+                        FlashHelper::addWarning($model->getAttributeLabel($attribute) . ': ' . $error);
+                        Yii::error($model->getAttributeLabel($attribute) . ': ' . $error, 'serverError');
+                    }
                 }
             }
         }

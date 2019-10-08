@@ -18,4 +18,5 @@
  */
 return [
     'Unexpected Server Error' => 'Negaidīta servera kļūda',
+    'Database error' => 'Datubāzes kļūda'
 ];
