@@ -37,16 +37,17 @@ class D3ActiveRecordException extends Exception
             $flashMessage = Yii::t('d3system', 'Database error');
         }
 
+        if ($loggingMessage) {
+            Yii::error($loggingMessage, 'ActiveRecord');
+        }
+
+        $modelErrors = 'Can\'t save ' . get_class($model) . PHP_EOL
+            . ' Message: ' . ($loggingMessage ?: $flashMessage) . PHP_EOL
+            . ' Errors: ' . VarDumper::export($model->getErrors()) . PHP_EOL
+            . ' Attributes: ' . VarDumper::export($model->attributes);
+
         if ($loggingMessage !== false) {
             Yii::error($flashMessage, 'ActiveRecord');
-            if ($loggingMessage) {
-                Yii::error($loggingMessage, 'ActiveRecord');
-            }
-
-            $modelErrors = 'Can\'t save ' . get_class($model) . PHP_EOL
-                . ' Message: ' . ($loggingMessage ?: $flashMessage) . PHP_EOL
-                . ' Errors: ' . VarDumper::export($model->getErrors()) . PHP_EOL
-                . ' Attributes: ' . VarDumper::export($model->attributes);
             Yii::error($modelErrors, 'ActiveRecord');
             $logger = Yii::getLogger();
             $logger->log($modelErrors, Logger::LEVEL_TRACE, 'ActiveRecord');
@@ -60,6 +61,9 @@ class D3ActiveRecordException extends Exception
                     }
                 }
             }
+        }
+        if(Yii::$app instanceof Application){
+            echo $modelErrors . PHP_EOL;
         }
         parent::__construct($flashMessage);
     }
