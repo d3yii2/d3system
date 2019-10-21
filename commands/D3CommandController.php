@@ -13,6 +13,11 @@ use yii\db\Connection;
 class D3CommandController extends Controller
 {
 
+    /**
+     * @var bool
+     */
+    public $debug = false;
+
     public function beforeAction($action)
     {
         $this->out('Started: ' . date('Ymd His'));
@@ -44,5 +49,11 @@ class D3CommandController extends Controller
         $this->stdout($string . PHP_EOL, $settings);
     }
 
+    public function debug(string $string, int $settings = 0): void
+    {
+        if($this->debug){
+            $this->out('DEBUG: ' . $string, $settings);
+        }
+    }
 }
 
