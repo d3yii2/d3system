@@ -3,9 +3,14 @@
 namespace d3system\yii2\web;
 
 
+use cornernote\returnurl\ReturnUrl;
 use Yii;
 use yii\web\View;
 
+/**
+ *
+ * @property string $leftMenu
+ */
 class D3SystemView extends View
 {
 
@@ -18,6 +23,8 @@ class D3SystemView extends View
      * @var string
      */
     public $defaultLeftMenu = 'main';
+
+    public $wikiViewUrl = ['/wiki/content/view'];
 
     /** @var string */
     private $leftMenuCode;
@@ -33,6 +40,7 @@ class D3SystemView extends View
     private $pageWiki = '';
 
     private $breadCrumb = [];
+
 
     public function init()
     {
@@ -63,7 +71,7 @@ class D3SystemView extends View
     /**
      * @param string $pageButton
      */
-    public function addPageButtons(string $pageButton)
+    public function addPageButtons(string $pageButton): void
     {
         $this->pageButtons[] = $pageButton;
     }
@@ -83,26 +91,38 @@ class D3SystemView extends View
     /**
      * @param string $pageButtonsRight
      */
-    public function addPageButtonsRight(string $pageButtonsRight)
+    public function addPageButtonsRight(string $pageButtonsRight): void
     {
         $this->pageButtonsRight[] = $pageButtonsRight;
     }
 
     /**
      * @return string
+     * @deprecated use self::getWikiViewUrl()
      */
-    public function getPageWiki()
+    public function getPageWiki(): string
     {
-        if(isset($this->params['pageWiki'])){
-            return $this->params['pageWiki'];
-        }
-        return $this->pageWiki;
+        return $this->params['pageWiki'] ?? $this->pageWiki;
     }
 
     /**
-     * @param int $pageWiki
+     * @return array
      */
-    public function setPageWiki(int $pageWiki)
+    public function getWikiViewUrl(): array
+    {
+        if(!$id = $this->params['pageWiki'] ?? $this->pageWiki){
+            return [];
+        }
+        $url = $this->wikiViewUrl;
+        $url['id'] = $id;
+        $url['ru'] = ReturnUrl::getToken($this->title);
+        return $url;
+    }
+
+    /**
+     * @param string $pageWiki
+     */
+    public function setPageWiki(string $pageWiki): void
     {
         $this->pageWiki = $pageWiki;
     }
@@ -130,7 +150,7 @@ class D3SystemView extends View
     /**
      * @param string $leftMenuCode
      */
-    public function setLeftMenu(string $leftMenuCode)
+    public function setLeftMenu(string $leftMenuCode): void
     {
         $this->leftMenuCode = trim($leftMenuCode);
     }
@@ -140,18 +160,14 @@ class D3SystemView extends View
      */
     public function getPageHeader(): string
     {
-        if(isset(Yii::$app->view->params['pageHeader'])){
-            return Yii::$app->view->params['pageHeader'];
-        }
-
-        return $this->pageHeader;
+        return Yii::$app->view->params['pageHeader'] ?? $this->pageHeader;
     }
 
 
     /**
      * @param mixed $pageHeader
      */
-    public function setPageHeader($pageHeader)
+    public function setPageHeader($pageHeader): void
     {
         $this->pageHeader = $pageHeader;
     }
@@ -161,18 +177,14 @@ class D3SystemView extends View
      */
     public function getPageFooter(): string
     {
-        if(isset(Yii::$app->view->params['pageFooter'])){
-            return Yii::$app->view->params['pageFooter'];
-        }
-
-        return $this->pageFooter;
+        return Yii::$app->view->params['pageFooter'] ?? $this->pageFooter;
     }
 
 
     /**
      * @param mixed $pageFooter
      */
-    public function setPageFooter(string $pageFooter)
+    public function setPageFooter(string $pageFooter): void
     {
         $this->pageFooter = $pageFooter;
     }
@@ -182,18 +194,14 @@ class D3SystemView extends View
      */
     public function getPageHeaderDescription(): string
     {
-        if(!empty(Yii::$app->view->params['pageHeaderDescription'])){
-            return Yii::$app->view->params['pageHeaderDescription'];
-        }
-
-        return $this->pageHeaderDescription;
+        return Yii::$app->view->params['pageHeaderDescription']??$this->pageHeaderDescription;
     }
 
 
     /**
      * @var string $description
      */
-    public function setPageHeaderDescription(string $description)
+    public function setPageHeaderDescription(string $description): void
     {
         $this->pageHeaderDescription = $description;
     }
@@ -203,17 +211,13 @@ class D3SystemView extends View
      */
     public function getPageIcon():string
     {
-
-        if(!empty(Yii::$app->view->params['pageIcon'])){
-            return Yii::$app->view->params['pageIcon'];
-        }
-        return $this->pageIcon;
+        return Yii::$app->view->params['pageIcon'] ?? $this->pageIcon;
     }
 
     /**
      * @param string $pageIcon
      */
-    public function setPageIcon(string $pageIcon)
+    public function setPageIcon(string $pageIcon): void
     {
         $this->pageIcon = $pageIcon;
     }
