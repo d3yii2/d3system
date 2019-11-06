@@ -221,4 +221,14 @@ class D3SystemView extends View
     {
         $this->pageIcon = $pageIcon;
     }
+
+    /**
+     * Detect the view is partial (URL contains fancybox param)
+     * @TODO - Fancybox is deprecated and the param name should be changed to more apprioriate
+     * @return bool|null
+     */
+    public function isPartialView(): ?bool
+    {
+        return Yii::$app->request->get('fancybox');
+    }
 }
