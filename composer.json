@@ -14,7 +14,8 @@
   "homepage": "https://github.com/d3yii2/d3system",
   "require": {
     "php": ">=5.4.0",
-    "yiisoft/yii2": "*"
+    "yiisoft/yii2": "*",
+    "yiisoft/yii2-redis": "2.0.8"
   },
   "autoload": {
     "psr-4": {
