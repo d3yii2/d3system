@@ -20,6 +20,8 @@ class D3CommandController extends Controller
 
     public function beforeAction($action)
     {
+        $this->out('');
+        $this->out('==================');
         $this->out('Started: ' . date('Ymd His'));
         return parent::beforeAction($action);
     }
@@ -27,6 +29,8 @@ class D3CommandController extends Controller
     public function afterAction($action, $result)
     {
         $this->out('Finished: ' . date('Ymd His'));
+        $this->out('==================');
+        $this->out('');
         return parent::afterAction($action, $result);
 
     }
