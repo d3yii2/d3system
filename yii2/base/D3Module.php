@@ -10,6 +10,11 @@ class D3Module extends Module
 {
     public $configFilePath;
 
+    /**
+     * @var array panels for PanelWidgets
+     */
+    public $panels;
+
     public function __construct($id, $parent = null, $config = [])
     {
         if(isset($config['configFilePath'])){
