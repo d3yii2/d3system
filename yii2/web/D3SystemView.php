@@ -4,6 +4,9 @@ namespace d3system\yii2\web;
 
 
 use cornernote\returnurl\ReturnUrl;
+use eaBlankonThema\widget\ThButton;
+use eaBlankonThema\widget\ThButtonDropDown;
+use Exception;
 use Yii;
 use yii\web\View;
 
@@ -37,9 +40,23 @@ class D3SystemView extends View
     private $pageButtons = [];
 
     private $pageButtonsRight = [];
+    private $finalPageButtonsRight = [];
     private $pageWiki = '';
 
     private $breadCrumb = [];
+
+    /**
+     * @var array = [
+     *   [
+     *      'lable' => 'label name'
+     *      'url' => [
+     *          'excel',
+     *           'id' => 12
+     *      ]
+     *   ]
+     * ]
+     */
+    private $exportButtonList = [];
 
 
     public function init()
@@ -78,14 +95,42 @@ class D3SystemView extends View
 
     /**
      * @return array
+     * @throws Exception
      */
     public function getPageButtonsRight(): array
     {
-        if(isset($this->params['pageButtonsRight'])){
-            return [$this->params['pageButtonsRight']];
+        if($this->finalPageButtonsRight){
+            return $this->finalPageButtonsRight;
         }
 
-        return $this->pageButtonsRight;
+        $this->finalPageButtonsRight = $this->pageButtonsRight;
+        if(isset($this->params['pageButtonsRight'])){
+            $this->finalPageButtonsRight = array_merge(
+                $this->finalPageButtonsRight,
+                $this->params['pageButtonsRight']
+            );
+        }
+        if(count($this->exportButtonList) === 1){
+            $this->finalPageButtonsRight[] = ThButton::widget([
+                'label' => Yii::t('d3system','Export')
+                    . ': '
+                    . $this->exportButtonList[0]['label'],
+                'icon' => ThButton::ICON_DOWNLOAD,
+                'type' => ThButton::TYPE_SUCCESS,
+                'link' => $this->exportButtonList[0]['url']
+            ]);
+        }elseif(count($this->exportButtonList) > 1){
+            $this->finalPageButtonsRight[] = ThButtonDropDown::widget([
+                'label' => Yii::t('d3system','Export')
+                    . ': '
+                    . $this->exportButtonList[0]['label'],
+                'icon' => ThButton::ICON_DOWNLOAD,
+                'type' => ThButton::TYPE_SUCCESS,
+                'items' => $this->exportButtonList
+            ]);
+        }
+
+        return $this->finalPageButtonsRight;
     }
 
     /**
@@ -94,6 +139,18 @@ class D3SystemView extends View
     public function addPageButtonsRight(string $pageButtonsRight): void
     {
         $this->pageButtonsRight[] = $pageButtonsRight;
+    }
+
+    /**
+     * @param string $label
+     * @param array $url
+     */
+    public function addExportButtonItem(string $label, array $url): void
+    {
+        $this->exportButtonList[] = [
+            'label' => $label,
+            'url' => $url
+        ];
     }
 
     /**

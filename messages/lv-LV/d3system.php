@@ -18,5 +18,6 @@
  */
 return [
     'Unexpected Server Error' => 'Negaidīta servera kļūda',
-    'Database error' => 'Datubāzes kļūda'
+    'Database error' => 'Datubāzes kļūda',
+    'Export' => 'Eksportēt'
 ];
