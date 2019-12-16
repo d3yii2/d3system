@@ -45,6 +45,8 @@ class D3SystemView extends View
 
     private $breadCrumb = [];
 
+    private $settingButtonUrl;
+    private $settingButtonTooltip;
     /**
      * @var array = [
      *   [
@@ -130,6 +132,15 @@ class D3SystemView extends View
             ]);
         }
 
+        if($this->settingButtonUrl){
+            $this->finalPageButtonsRight[] = ThButton::widget([
+                'type' => ThButton::TYPE_DEFAULT,
+                'tooltip' => $this->settingButtonTooltip,
+                'link' => $this->settingButtonUrl,
+                'icon' => ThButton::ICON_COG,
+            ]);
+        }
+
         return $this->finalPageButtonsRight;
     }
 
@@ -151,6 +162,12 @@ class D3SystemView extends View
             'label' => $label,
             'url' => $url
         ];
+    }
+
+    public function setSettingButton(array $url, string $tooltip = ''): void
+    {
+        $this->settingButtonUrl = $url;
+        $this->settingButtonTooltip = $tooltip;
     }
 
     /**
