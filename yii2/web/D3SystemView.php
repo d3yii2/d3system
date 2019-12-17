@@ -107,10 +107,7 @@ class D3SystemView extends View
 
         $this->finalPageButtonsRight = $this->pageButtonsRight;
         if(isset($this->params['pageButtonsRight'])){
-            $this->finalPageButtonsRight = array_merge(
-                $this->finalPageButtonsRight,
-                $this->params['pageButtonsRight']
-            );
+            $this->finalPageButtonsRight[] = $this->params['pageButtonsRight'];
         }
         if(count($this->exportButtonList) === 1){
             $this->finalPageButtonsRight[] = ThButton::widget([
