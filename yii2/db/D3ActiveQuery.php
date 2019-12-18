@@ -13,6 +13,7 @@ class D3ActiveQuery extends ActiveQuery
 {
 
     /**
+     * Use for datetime 'to' value increment by 1 day
      * @param string $fieldName
      * @param string|null $dateRange
      * @return ActiveQuery
@@ -30,6 +31,27 @@ class D3ActiveQuery extends ActiveQuery
         [$from, $to] = $list;
         $expressionTo = new Expression('ADDDATE(\'' . $to . '\',1)');
         return $this->andFilterWhere(['between', $fieldName, $from, $expressionTo]);
+    }
+
+    /**
+     * Use for date. $to not incremented by 1 day
+     *
+     * @param string $fieldName
+     * @param string|null $dateRange
+     * @return ActiveQuery
+     */
+    public function andFilterWhereDateStrictRange(string $fieldName, $dateRange): ActiveQuery
+    {
+        if (!$dateRange) {
+            return $this;
+        }
+
+        $list = explode(' - ', $dateRange);
+        if (count($list) !== 2) {
+            return $this;
+        }
+        [$from, $to] = $list;
+        return $this->andFilterWhere(['between', $fieldName, $from, $to]);
     }
 
     /**
