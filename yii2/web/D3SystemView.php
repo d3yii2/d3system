@@ -120,9 +120,7 @@ class D3SystemView extends View
             ]);
         }elseif(count($this->exportButtonList) > 1){
             $this->finalPageButtonsRight[] = ThButtonDropDown::widget([
-                'label' => Yii::t('d3system','Export')
-                    . ': '
-                    . $this->exportButtonList[0]['label'],
+                'label' => Yii::t('d3system','Export'),
                 'icon' => ThButton::ICON_DOWNLOAD,
                 'type' => ThButton::TYPE_SUCCESS,
                 'items' => $this->exportButtonList
