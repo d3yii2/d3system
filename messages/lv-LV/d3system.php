@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    'Content error' => 'Satura kļūda',
     'Unexpected Server Error' => 'Negaidīta servera kļūda',
     'Database error' => 'Datubāzes kļūda',
     'Export' => 'Eksportēt'
