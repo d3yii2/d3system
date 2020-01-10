@@ -3,7 +3,9 @@
 namespace d3system\compnents;
 
 
+use d3system\exceptions\D3ActiveRecordException;
 use d3system\models\SysModels;
+use Yii;
 use yii\base\Component;
 use yii\db\ActiveRecord;
 
@@ -34,17 +36,17 @@ class ModelsList extends Component
     public function init(): void
     {
 
-        if (!$this->listTableNameId = \Yii::$app->cache->get($this->cacheKey.'ByTableName')) {
+        if (!$this->listTableNameId = Yii::$app->cache->get($this->cacheKey.'ByTableName')) {
             $this->loadListFromDb();
         }
-        $this->listClassNameId = \Yii::$app->cache->get($this->cacheKey.'ByClassName');
+        $this->listClassNameId = Yii::$app->cache->get($this->cacheKey.'ByClassName');
 
     }
 
     /**
      * @param ActiveRecord $model
      * @return int
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @throws D3ActiveRecordException
      */
     public function getIdByTableName($model): int
     {
@@ -60,7 +62,7 @@ class ModelsList extends Component
     /**
      * @param string $className
      * @return int
-     * @throws \d3system\exceptions\D3ActiveRecordException
+     * @throws D3ActiveRecordException
      */
     public function getIdByClassName(string $className): int
     {
@@ -78,6 +80,6 @@ class ModelsList extends Component
     private function loadListFromDb():void
     {
         $this->listTableNameId = SysModels::getTableNameIdList($this->cacheKey, $this->cacheDuration);
-        $this->listClassNameId = \Yii::$app->cache->get($this->cacheKey.'ByClassName');
+        $this->listClassNameId = Yii::$app->cache->get($this->cacheKey.'ByClassName');
     }
 }
