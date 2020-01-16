@@ -15,5 +15,6 @@ return [
     'The requested page does not exist' => 'Pieprasītā lapa neeksistē',
     'Full' => 'Pilna',
     'Read' => 'Skatīt',
+    'Select' => 'Izvēlēties'
 
 ];
