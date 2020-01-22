@@ -1,6 +1,6 @@
 <?php
 
-namespace invoicesreader\reader\optional;
+namespace d3system\compnents\optional;
 
 use InvalidArgumentException;
 use LogicException;
