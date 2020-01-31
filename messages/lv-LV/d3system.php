@@ -20,5 +20,7 @@ return [
     'Content error' => 'Satura kļūda',
     'Unexpected Server Error' => 'Negaidīta servera kļūda',
     'Database error' => 'Datubāzes kļūda',
-    'Export' => 'Eksportēt'
+    'Export' => 'Eksportēt',
+    'Widget init failed' => 'Nevar ielādēt paplašinājumu',
+    'Widget output error' => 'Paplašinājuma satura kļūda',
 ];
