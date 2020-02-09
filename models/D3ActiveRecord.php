@@ -3,11 +3,12 @@
 namespace d3system\models;
 
 use d3system\exceptions\D3ActiveRecordException;
-use d3system\yii2\db\D3ActiveQuery;
 use d3system\exceptions\D3Exception;
+use d3system\yii2\db\D3ActiveQuery;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\VarDumper;
-use Yii;
 
 /**
  * Class D3ActiveRecord
@@ -27,8 +28,8 @@ class D3ActiveRecord extends ActiveRecord
                 Yii::t('d3system', 'Unexpected Server Error'),
                 'Cannot load data into model: ' . static::class . PHP_EOL
                 . PHP_EOL . 'Data: ' . VarDumper::dumpAsString($data)
-                . PHP_EOL . ' Errors: ' .  VarDumper::export($this->getErrors())
-                . PHP_EOL .  ' Attributes: ' . VarDumper::export($this->attributes)
+                . PHP_EOL . ' Errors: ' . VarDumper::export($this->getErrors())
+                . PHP_EOL . ' Attributes: ' . VarDumper::export($this->attributes)
             );
         }
     }
@@ -57,9 +58,10 @@ class D3ActiveRecord extends ActiveRecord
      * {@inheritdoc}
      * @return D3ActiveQuery the newly created [[D3ActiveQuery ]] instance.
      * @TODO - Lai uzdotu return tipu, jālabo ::find visos modeļos
+     * @throws InvalidConfigException
      */
     public static function find()
     {
-        return Yii::createObject(D3ActiveQuery::class, [get_called_class()]);
+        return Yii::createObject(D3ActiveQuery::class, [static::class]);
     }
 }
