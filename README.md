@@ -6,6 +6,29 @@
 composer require d3yii2/d3system dev-master
 ```
 
+## Configuration
+add translation
+```php
+$config = [
+   'components' => [
+        'i18n' => [
+            'translations' => [ 
+                'd3system*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@d3yii2/d3system/messages',
+                    'sourceLanguage' => 'en-US',
+                ],
+                'crud' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@d3yii2/d3system/messages',
+                    'sourceLanguage' => 'en-US',
+                ],
+            ]
+        ]
+    ]
+];
+```
+
 ## Compnents
 
 
