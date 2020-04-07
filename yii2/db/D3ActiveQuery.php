@@ -3,7 +3,6 @@
 namespace d3system\yii2\db;
 
 use yii\db\ActiveQuery;
-use yii\db\Expression;
 
 /**
  * Class D3ActiveQuery
@@ -29,8 +28,7 @@ class D3ActiveQuery extends ActiveQuery
             return $this;
         }
         [$from, $to] = $list;
-        $expressionTo = new Expression('ADDDATE(\'' . $to . '\',1)');
-        return $this->andFilterWhere(['between', $fieldName, $from, $expressionTo]);
+        return $this->andFilterWhere(['between', $fieldName, $from, $to . '  23:59:59']);
     }
 
     /**
