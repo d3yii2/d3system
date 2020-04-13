@@ -23,7 +23,7 @@ class SysCronFinalPoint extends BaseSysCronFinalPoint
         if(!$model = self::find()
             ->select('value')
             ->where(['route'=>$route])
-            ->scalar()
+            ->one()
         ){
             $model = new self();
             $model->route = $route;
