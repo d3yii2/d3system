@@ -21,7 +21,6 @@ class SysCronFinalPoint extends BaseSysCronFinalPoint
     public static function saveFinalPointValue(string $route, $value): void
     {
         if(!$model = self::find()
-            ->select('value')
             ->where(['route'=>$route])
             ->one()
         ){
