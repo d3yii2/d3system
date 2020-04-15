@@ -259,6 +259,14 @@ class D3SystemView extends View
     }
 
     /**
+     * @param string $content
+     */
+    public function addToPageFooter(string $content): void
+    {
+        $this->pageFooter .= $content;
+    }
+
+    /**
      * @return string
      */
     public function getPageHeaderDescription(): string
