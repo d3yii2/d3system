@@ -22,6 +22,18 @@ class D3CommandController extends Controller
     {
         $this->out('');
         $this->out('==================');
+        $this->out('Route: ' . $this->route);
+        $argv = $_SERVER['argv'];
+        unset($argv[0],$argv[1]);
+        if($argv) {
+            $this->out('Arguments:');
+            foreach ($argv as $argValue) {
+                $this->out(' ' . $argValue);
+            }
+        }
+        $this->out('Action: ' . $action->actionMethod);
+        $this->out('Class: ' . get_class($action->controller));
+        $this->out('------------------');
         $this->out('Started: ' . date('Ymd His'));
         return parent::beforeAction($action);
     }
