@@ -2,6 +2,7 @@
 
 namespace d3system\models;
 
+use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
@@ -70,6 +71,18 @@ class SysModels extends \yii\db\ActiveRecord
         if(!$record->save()){
             throw new D3ActiveRecordException($record);
         }
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        SysModelsDictionary::clearCache();
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        SysModelsDictionary::clearCache();
     }
 
 }
