@@ -101,15 +101,15 @@ public function behaviors()
 
 ### Assign the value before save
 ```php
-$model->load(Yii::$app->request->post())
+$model->load(Yii::$app->request->post());
 ```
 or
 ```php
- $model->YOUR_ATTRIBUTE_local = $value
+ $model->YOUR_ATTRIBUTE_local = $value;
 ```
 or
 ```php
- $model->setAttribute('YOUR_ATTRIBUTE_local', $value)
+ $model->setAttribute('YOUR_ATTRIBUTE_local', $value);
 ```
 
 By multiple assignment via load() ensure the local attributes have 'safe' rules:
