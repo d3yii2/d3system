@@ -29,7 +29,7 @@ $config = [
 ];
 ```
 
-## Compnents
+## Components
 
 
 
@@ -67,9 +67,9 @@ use
 $model->YOUR_ATTRIBUTE_local
 ```
 
-### Prepare behavior
+### Add behavior config in model
 Add the behavior to your model and list the attributes need to be converted
-Important: NOT add the "_local" suffix here!
+Important: do NOT add the "_local" suffix here!
 ```php
 public function behaviors(): array
 {
@@ -94,16 +94,14 @@ public function behaviors()
 }
 ```
 
-### Get converted value
-In controller or view:
+### Display value in view
 ```php
-$date = $model->YOUR_ATTRIBUTE_local
+<?= $model->YOUR_ATTRIBUTE_local ?>
 ```
 
-### Set the value before save
-In the model:
+### Assign the value before save
 ```php
-$model->load($params)
+$model->load(Yii::$app->request->post())
 ```
 or
 ```php
