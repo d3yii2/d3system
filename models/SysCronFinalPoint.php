@@ -17,6 +17,14 @@ class SysCronFinalPoint extends BaseSysCronFinalPoint
             ->where(['route'=>$route])
             ->scalar();
     }
+    
+    public static function getFinalPointValueAsString(string $route): string
+    {
+        return (string)self::find()
+            ->select('value')
+            ->where(['route'=>$route])
+            ->scalar();
+    }
 
     public static function saveFinalPointValue(string $route, $value): void
     {
