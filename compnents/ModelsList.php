@@ -54,6 +54,7 @@ class ModelsList extends Component
             return $this->listTableNameId[$model->tableName()];
         }
         SysModels::addRecord($model);
+        Yii::$app->cache->delete($this->cacheKey.'ByClassName');
         $this->loadListFromDb();
 
         return $this->getIdByTableName($model);
@@ -72,6 +73,7 @@ class ModelsList extends Component
 
         $model = new $className();
         SysModels::addRecord($model);
+        Yii::$app->cache->delete($this->cacheKey.'ByClassName');
         $this->loadListFromDb();
 
         return $this->getIdByClassName($className);
