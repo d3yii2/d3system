@@ -9,17 +9,19 @@ use d3system\exceptions\D3ActiveRecordException;
 
 class SysModelsDictionary{
 
-    private const CACHE_KEY_LIST = 'SysModelsDictionaryList';
+    private const CACHE_KEY_LABEL_LIST = 'SysModelsDictionaryList';
     private const CACHE_KEY_CLASS_LIST = 'SysModelsDictionaryClassList';
+    private const CACHE_KEY_TABLE_NAME_LIST = 'SysModelsDictionaryTableNameList';
 
-    public static function getIdByName(string $name): int
+    public static function getIdByClassName(string $className): int
     {
-        $list = self::getList();
-        if($id = (int)array_search($name, $list, true)){
+        $list = self::getClassList();
+        if($id = (int)array_search($className, $list, true)){
             return $id;
         }
         $model = new SysModels();
-        $model->name = $name;
+        $model->table_name = $className::tableName();
+        $model->class_name = $className;
         if(!$model->save()){
             throw new D3ActiveRecordException($model);
         }
@@ -28,10 +30,10 @@ class SysModelsDictionary{
 
     }
 
-    public static function getList(): array
+    public static function getLabelList(): array
     {
         return Yii::$app->cache->getOrSet(
-            self::CACHE_KEY_LIST,
+            self::CACHE_KEY_LABEL_LIST,
             static function () {
                 $list = [];
                 foreach(self::getClassList() as $id => $className){
@@ -59,7 +61,31 @@ class SysModelsDictionary{
                         'name' => 'class_name',
                     ])
                     ->orderBy([
-                        'id' => SORT_ASC,
+                        'name' => SORT_ASC,
+                    ])
+                    ->asArray()
+                    ->all()
+                ,
+                'id',
+                'name'
+                );
+            }
+        );
+    }
+
+    public static function getTableNameList(): array
+    {
+        return Yii::$app->cache->getOrSet(
+            self::CACHE_KEY_TABLE_NAME_LIST,
+            static function () {
+                return ArrayHelper::map(
+                    SysModels::find()
+                    ->select([
+                        'id' => 'id',
+                        'name' => 'table_name',
+                    ])
+                    ->orderBy([
+                        'name' => SORT_ASC,
                     ])
                     ->asArray()
                     ->all()
@@ -73,6 +99,8 @@ class SysModelsDictionary{
 
     public static function clearCache(): void
     {
-        Yii::$app->cache->delete(self::CACHE_KEY_LIST);
+        Yii::$app->cache->delete(self::CACHE_KEY_LABEL_LIST);
+        Yii::$app->cache->delete(self::CACHE_KEY_CLASS_LIST);
+        Yii::$app->cache->delete(self::CACHE_KEY_TABLE_NAME_LIST);
     }
 }

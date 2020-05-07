@@ -47,6 +47,7 @@ class ModelsList extends Component
      * @param ActiveRecord $model
      * @return int
      * @throws D3ActiveRecordException
+     * @deprecated
      */
     public function getIdByTableName($model): int
     {
@@ -64,6 +65,7 @@ class ModelsList extends Component
      * @param string $className
      * @return int
      * @throws D3ActiveRecordException
+     * @deprecated
      */
     public function getIdByClassName(string $className): int
     {
