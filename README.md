@@ -123,3 +123,38 @@ public function rules(): array
     ];
 }
 ```
+
+D3EditableAction Initial Setup in Controller
+```
+editAbleFields: must match real attributes
+editAbleFieldsForbbiden: must match real attributes
+modelName: pass current controller model Name with full Namespace
+```
+```php
+/**
+ * @var array
+ */
+public $editAbleFields = ['hasEditable', 'status'];
+
+/**
+ * @var array
+ */
+public $editAbleFieldsForbbiden = [];
+```
+
+Actions
+```php
+public function actions()
+{
+    return [
+        'editable'      => [
+            'class'                   => 'd3system\actions\d3EditableAction',
+            'modelName'               => 'cewood\cwpallet\models\CwpalletPallet',
+            'editAbleFields'          => $this->editAbleFields,
+            'editAbleFieldsForbbiden' => $this->editAbleFieldsForbbiden,
+        ],
+    ];
+}
+```
+
+
