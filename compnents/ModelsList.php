@@ -65,7 +65,7 @@ class ModelsList extends Component
      * @param string $className
      * @return int
      * @throws D3ActiveRecordException
-     * @deprecated
+     * @deprecated  use SysModelsDictionary::getIdByClassName();
      */
     public function getIdByClassName(string $className): int
     {
