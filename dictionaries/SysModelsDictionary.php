@@ -19,6 +19,15 @@ class SysModelsDictionary{
         if($id = (int)array_search($className, $list, true)){
             return $id;
         }
+
+        /**
+         * visu laiku lido mistiska kļūda. Pieliku papildus variantu
+         */
+        if($model = SysModels::findOne(['class_name' => $className])){
+            self::clearCache();
+            return $model->id;
+        }
+
         $model = new SysModels();
         $model->table_name = $className::tableName();
         $model->class_name = $className;
