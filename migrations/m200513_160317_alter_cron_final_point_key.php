@@ -67,8 +67,8 @@ abstract class SysCronFinalPoint extends ActiveRecord
             'route' => Yii::t('d3system', 'Route'),
             'value' => Yii::t('d3system', 'Value'),
             'timestamp' => Yii::t('d3system', 'Timestamp'),
-            'key' => Yii::t('d3system', 'Key'),
         ]);
     }
 
 }
+
