@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Class m190516_092701_create_cron_final_point
  */
-class m190516_092701_create_cron_final_point extends Migration
+class m200513_160317_alter_cron_final_point_key extends Migration
 {
     /**
      * {@inheritdoc}
