@@ -20,7 +20,7 @@ use function array_unique;
 
 use const PHP_EOL;
 
-class d3EditableAction extends Action
+class D3EditableAction extends Action
 {
     /**
      * @var array

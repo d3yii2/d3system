@@ -15,6 +15,8 @@ use yii\db\ActiveRecord;
  * @property string $value
  * @property string $timestamp
  * @property string $aliasModel
+ * @property strin $key
+ *
  */
 abstract class SysCronFinalPoint extends ActiveRecord
 {
@@ -37,7 +39,8 @@ abstract class SysCronFinalPoint extends ActiveRecord
     {
         return [
             [['timestamp'], 'safe'],
-            [['route', 'value'], 'string', 'max' => 250]
+            [['route', 'value'], 'string', 'max' => 250],
+            [['key'], 'string', 'max' => 50],
         ];
     }
 
@@ -51,6 +54,7 @@ abstract class SysCronFinalPoint extends ActiveRecord
             'route' => Yii::t('d3system', 'Route'),
             'value' => Yii::t('d3system', 'Value'),
             'timestamp' => Yii::t('d3system', 'Timestamp'),
+            'key' => Yii::t('d3ldz', 'Key'),
         ];
     }
 
@@ -63,10 +67,8 @@ abstract class SysCronFinalPoint extends ActiveRecord
             'route' => Yii::t('d3system', 'Route'),
             'value' => Yii::t('d3system', 'Value'),
             'timestamp' => Yii::t('d3system', 'Timestamp'),
+            'key' => Yii::t('d3system', 'Key'),
         ]);
     }
-
-
-
 
 }

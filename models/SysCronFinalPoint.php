@@ -10,30 +10,37 @@ use d3system\models\base\SysCronFinalPoint as BaseSysCronFinalPoint;
  */
 class SysCronFinalPoint extends BaseSysCronFinalPoint
 {
-    public static function getFinalPointValue(string $route): int
+    public static function getFinalPointValue(string $route, $key = null): int
     {
         return (int)self::find()
             ->select('value')
-            ->where(['route'=>$route])
-            ->scalar();
-    }
-    
-    public static function getFinalPointValueAsString(string $route): string
-    {
-        return (string)self::find()
-            ->select('value')
-            ->where(['route'=>$route])
+            ->where(['route' => $route,
+                     'key' => $key
+            ])
             ->scalar();
     }
 
-    public static function saveFinalPointValue(string $route, $value): void
+    public static function getFinalPointValueAsString(string $route, $key = null): string
+    {
+        return (string)self::find()
+            ->select('value')
+            ->where(['route' => $route,
+                     'key' => $key
+            ])
+            ->scalar();
+    }
+
+    public static function saveFinalPointValue(string $route, $value, $key = null): void
     {
         if(!$model = self::find()
-            ->where(['route'=>$route])
+            ->where(['route'=>$route,
+                     'key' => $key
+            ])
             ->one()
         ){
             $model = new self();
             $model->route = $route;
+            $model->key = (string)$key;
         }
         $model->value = $value;
         if(!$model->save()){
@@ -43,3 +50,4 @@ class SysCronFinalPoint extends BaseSysCronFinalPoint
 
 
 }
+
