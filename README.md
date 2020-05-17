@@ -148,7 +148,7 @@ public function actions()
 {
     return [
         'editable'      => [
-            'class'                   => 'd3system\actions\d3EditableAction',
+            'class'                   => 'D3system\actions\d3EditableAction',
             'modelName'               => 'cewood\cwpallet\models\CwpalletPallet',
             'editAbleFields'          => $this->editAbleFields,
             'editAbleFieldsForbbiden' => $this->editAbleFieldsForbbiden,
