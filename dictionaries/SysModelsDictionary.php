@@ -6,6 +6,7 @@ use Yii;
 use d3system\models\SysModels;
 use yii\helpers\ArrayHelper;
 use d3system\exceptions\D3ActiveRecordException;
+use yii\helpers\VarDumper;
 
 class SysModelsDictionary{
 
@@ -32,7 +33,7 @@ class SysModelsDictionary{
         $model->table_name = $className::tableName();
         $model->class_name = $className;
         if(!$model->save()){
-            throw new D3ActiveRecordException($model);
+            throw new D3ActiveRecordException($model,'','$list: ' .VarDumper::dumpAsString($list));
         }
 
         return $model->id;
