@@ -18,6 +18,8 @@ use function array_keys;
 use function array_merge;
 use function array_unique;
 
+use function class_exists;
+
 use const PHP_EOL;
 
 class D3EditableAction extends Action
@@ -200,6 +202,10 @@ class D3EditableAction extends Action
      */
     protected function findModel(int $id)
     {
+        if (!class_exists($this->modelName)) {
+            throw new HttpException(404, Yii::t('crud', 'The requested page does not exist.'));
+        }
+
         if (($model = $this->modelName::findOne($id)) === null) {
             throw new HttpException(404, Yii::t('crud', 'The requested page does not exist.'));
         }
