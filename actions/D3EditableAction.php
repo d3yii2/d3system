@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace d3system\actions;
 
+use ReflectionMethod;
 use Yii;
 use yii\base\Action;
 use yii\base\Model;
@@ -17,13 +18,25 @@ use function array_diff_assoc;
 use function array_keys;
 use function array_merge;
 use function array_unique;
-
 use function class_exists;
+use function dd;
+use function implode;
+use function method_exists;
 
 use const PHP_EOL;
 
 class D3EditableAction extends Action
 {
+    /**
+     * @var object $controller
+     */
+    public $controller;
+
+    /**
+     * @var int $id
+     */
+    public $id;
+
     /**
      * @var array
      */
@@ -49,6 +62,11 @@ class D3EditableAction extends Action
     public $modelName;
 
     /**
+     * @var string
+     */
+    private $methodName = 'findModel';
+
+    /**
      * @param int $id
      * @return array|bool
      * @throws HttpException
@@ -56,7 +74,18 @@ class D3EditableAction extends Action
     final public function run(int $id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $request = Yii::$app->request;
+        $request                    = Yii::$app->request;
+
+        /**
+         * check does method exist
+         * fails if findModel is procted MUST BE Public function inside controller
+         */
+        if (method_exists($this->controller, $this->methodName)) {
+            $reflection = new ReflectionMethod($this->controller, $this->methodName);
+            if (!$reflection->isPublic()) {
+                throw new HttpException(405, "The called {$this->methodName} method is not public.");
+            }
+        }
 
         $requestPost = $request->post();
         // Check if there is an Editable ajax request
@@ -77,7 +106,7 @@ class D3EditableAction extends Action
         }
 
         /**
-         * Invalid Requrest
+         * Invalid Request
          */
         $getUserInvalidRequest = $this->filterRequestPost($requestPost, $getUserInvalidAttributes);
 
@@ -104,9 +133,9 @@ class D3EditableAction extends Action
         /**
          * @var Model $model
          */
-        $model = $this->findModel($id);
-        foreach($post as $name => $value){
-            if(!$model->isAttributeSafe($name)){
+        $model = $this->controller->{$this->methodName}($id);
+        foreach ($post as $name => $value) {
+            if (!$model->isAttributeSafe($name)) {
                 return $this->cannotUpdate();
             }
         }
@@ -117,7 +146,7 @@ class D3EditableAction extends Action
             $value = $model->$name;
             // return JSON encoded output in the below format
             return [
-                'output' => $value,
+                'output'  => $value,
                 'message' => ''
             ];
         }
@@ -131,7 +160,7 @@ class D3EditableAction extends Action
             }
         }
         return [
-            'output' => '',
+            'output'  => '',
             'message' => implode('<br>', $errors)
         ];
     }
@@ -217,7 +246,7 @@ class D3EditableAction extends Action
     public function cannotUpdate(): array
     {
         return [
-            'output' => '',
+            'output'  => '',
             'message' => Yii::t(
                 'd3system',
                 'Cannot update this field'
