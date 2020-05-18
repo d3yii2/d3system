@@ -49,12 +49,19 @@ class D3EditableAction extends Action
     /**
      * @param int $id
      * @return array|bool
+     * @throws HttpException
      */
     final public function run(int $id)
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $request = Yii::$app->request;
 
         $requestPost = $request->post();
+        // Check if there is an Editable ajax request
+        if (!$request->post('hasEditable')) {
+            return $this->cannotUpdate();
+        }
+        unset($requestPost['hasEditable']);
 
         /**
          * Invalid Attributes
@@ -81,47 +88,38 @@ class D3EditableAction extends Action
 
         $getWhiteListRequest = $this->filterRequestPost($requestPost, $getWhiteListAttributes);
 
-        // Check if there is an Editable ajax request
-        if (!$request->post('hasEditable')) {
-            return false;
-        }
-
         $post = [];
         foreach ($getWhiteListRequest as $name => $value) {
             $post[$name] = $value;
         }
 
         // use Yii's response format to encode output as JSON
-        Yii::$app->response->format = Response::FORMAT_JSON;
+
         if (!$post) {
-            return [
-                'output'  => '',
-                'message' => Yii::t(
-                    'cm_delivery',
-                    'Cannot update this field'
-                )
-            ];
+            return $this->cannotUpdate();
         }
 
         /**
          * @var Model $model
          */
         $model = $this->findModel($id);
+        foreach($post as $name => $value){
+            if(!$model->isAttributeSafe($name)){
+                return $this->cannotUpdate();
+            }
+        }
         $model->setAttributes($post);
-        // read your posted model attributes
+
         if ($model->save()) {
             // read or convert your posted information
             $value = $model->$name;
-
             // return JSON encoded output in the below format
-            return ['output' => $value, 'message' => ''];
-
-            // alternatively you can return a validation error
-            // return ['output'=>'', 'message'=>Yii::t('cm_delivery', 'Validation error')];
+            return [
+                'output' => $value,
+                'message' => ''
+            ];
         }
-        // else if nothing to do always return an empty JSON encoded output
 
-        //  return ['output'=>'', 'message'=>''];
         $errors = [];
         foreach ($model->errors as $field => $messages) {
             foreach ($messages as $message) {
@@ -130,11 +128,15 @@ class D3EditableAction extends Action
                     . $message;
             }
         }
-        return ['output' => '', 'message' => implode('<br>', $errors)];
+        return [
+            'output' => '',
+            'message' => implode('<br>', $errors)
+        ];
     }
 
     /**
      * @param array $request
+     * @param array $getOptional
      * @return array
      */
     private function getAttributes(array $request, $getOptional = []): array
@@ -204,5 +206,16 @@ class D3EditableAction extends Action
             throw new HttpException(404, Yii::t('crud', 'The requested page does not exist.'));
         }
         return $model;
+    }
+
+    public function cannotUpdate(): array
+    {
+        return [
+            'output' => '',
+            'message' => Yii::t(
+                'd3system',
+                'Cannot update this field'
+            )
+        ];
     }
 }
