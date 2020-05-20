@@ -23,4 +23,5 @@ return [
     'Export' => 'Eksportēt',
     'Widget init failed' => 'Nevar ielādēt paplašinājumu',
     'Widget output error' => 'Paplašinājuma satura kļūda',
+    'Cannot update this field.' => 'Šo lauku nevar labot.'
 ];

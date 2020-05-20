@@ -21,6 +21,7 @@ return [
     'Unexpected Server Error' => 'ошибка сервера',
     'Database error' => 'ошибка базы данных',
     'Export' => 'экспорт',
-    'Widget init failed' => 'Nevar ielādēt paplašinājumu',
-    'Widget output error' => 'Paplašinājuma satura kļūda',
+    'Widget init failed' => 'Ошибка инициализации виджета',
+    'Widget output error' => 'Ошибка вывода виджета',
+    'Cannot update this field.' => 'Не удается обновить это поле.'
 ];

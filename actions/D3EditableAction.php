@@ -4,26 +4,15 @@ declare(strict_types=1);
 
 namespace d3system\actions;
 
-use ReflectionMethod;
 use Yii;
 use yii\base\Action;
-use yii\base\Model;
-use yii\helpers\ArrayHelper;
-use yii\helpers\VarDumper;
+use yii\db\ActiveRecord;
 use yii\web\HttpException;
 use yii\web\Response;
 
-use function array_diff;
-use function array_diff_assoc;
-use function array_keys;
-use function array_merge;
-use function array_unique;
 use function class_exists;
-use function dd;
 use function implode;
 use function method_exists;
-
-use const PHP_EOL;
 
 class D3EditableAction extends Action
 {
@@ -40,9 +29,7 @@ class D3EditableAction extends Action
     /**
      * @var array
      */
-    private $editAbleFieldForbbidenDefault = [
-        'id'
-    ];
+    public $editAbleFieldForbiddenDefault = [];
 
     /**
      * @var array
@@ -54,7 +41,7 @@ class D3EditableAction extends Action
      *
      * @var array
      */
-    public $editAbleFieldsForbbiden = [];
+    public $editAbleFieldsForbidden = [];
 
     /**
      * @var string
@@ -76,17 +63,6 @@ class D3EditableAction extends Action
         Yii::$app->response->format = Response::FORMAT_JSON;
         $request                    = Yii::$app->request;
 
-        /**
-         * check does method exist
-         * fails if findModel is procted MUST BE Public function inside controller
-         */
-        if (method_exists($this->controller, $this->methodName)) {
-            $reflection = new ReflectionMethod($this->controller, $this->methodName);
-            if (!$reflection->isPublic()) {
-                throw new HttpException(405, "The called {$this->methodName} method is not public.");
-            }
-        }
-
         $requestPost = $request->post();
         // Check if there is an Editable ajax request
         if (!$request->post('hasEditable')) {
@@ -95,58 +71,41 @@ class D3EditableAction extends Action
         unset($requestPost['hasEditable']);
 
         /**
-         * Invalid Attributes
+         * @var ActiveRecord $model
          */
-        $getUserInvalidAttributes = $this->getAttributes($requestPost, $this->editAbleFields);
+        $model = $this->findModel($id);
 
-        if ($getUserInvalidAttributes) {
-            Yii::error(
-                'd3EditableAction User Invalid Attributes' . PHP_EOL . VarDumper::export($getUserInvalidAttributes)
-            );
-        }
+        $forbiddenFields = array_merge(
+            $model::primaryKey(),
+            $this->editAbleFieldForbiddenDefault,
+            $this->editAbleFieldsForbidden
+        );
+        foreach ($requestPost as $name => $value) {
 
-        /**
-         * Invalid Request
-         */
-        $getUserInvalidRequest = $this->filterRequestPost($requestPost, $getUserInvalidAttributes);
-
-        /**
-         * Remove Invalid User Attributes
-         */
-        $getFilteredRequest = $this->filterRequest($requestPost, $getUserInvalidRequest);
-
-        $getWhiteListAttributes = $this->getWhiteListAttributes($getFilteredRequest);
-
-        $getWhiteListRequest = $this->filterRequestPost($requestPost, $getWhiteListAttributes);
-
-        $post = [];
-        foreach ($getWhiteListRequest as $name => $value) {
-            $post[$name] = $value;
-        }
-
-        // use Yii's response format to encode output as JSON
-
-        if (!$post) {
-            return $this->cannotUpdate();
-        }
-
-        /**
-         * @var Model $model
-         */
-        $model = $this->controller->{$this->methodName}($id);
-        foreach ($post as $name => $value) {
+            if($this->editAbleFields && !in_array($name,$this->editAbleFields,true)){
+                return $this->cannotUpdate();
+            }
+            if(in_array($name,$forbiddenFields,true)){
+                return $this->cannotUpdate();
+            }
             if (!$model->isAttributeSafe($name)) {
                 return $this->cannotUpdate();
             }
         }
-        $model->setAttributes($post);
+        $model->setAttributes($requestPost);
 
         if ($model->save()) {
             // read or convert your posted information
-            $value = $model->$name;
+            $output =[];
+            foreach ($requestPost as $name => $value) {
+                $output[$name] = $model->$name;
+            }
+            if(count($output) === 1){
+                $output = array_values($output)[0];
+            }
             // return JSON encoded output in the below format
             return [
-                'output'  => $value,
+                'output'  => $output,
                 'message' => ''
             ];
         }
@@ -166,65 +125,6 @@ class D3EditableAction extends Action
     }
 
     /**
-     * @param array $request
-     * @param array $getOptional
-     * @return array
-     */
-    private function getAttributes(array $request, $getOptional = []): array
-    {
-        return array_diff(
-            array_keys($request),
-            array_merge(
-                $this->editAbleFieldsForbbiden,
-                $this->editAbleFieldForbbidenDefault
-            ),
-            $getOptional
-        );
-    }
-
-    /**
-     * @param $request
-     * @param $getPost
-     * @return array
-     */
-    private function filterRequest($request, $getPost): array
-    {
-        return array_diff_assoc($request, $getPost);
-    }
-
-    /**
-     * @param array $request
-     * @param array $getAttributes
-     * @return array
-     */
-    private function filterRequestPost(array $request, array $getAttributes): array
-    {
-        return ArrayHelper::filter($request, $getAttributes);
-    }
-
-    /**
-     * @param array $getFilteredRequest
-     * @return array
-     */
-    private function getWhiteListAttributes($getFilteredRequest): array
-    {
-        $getBaseWhiteListAttributes = array_unique(
-            array_merge(
-                array_keys($getFilteredRequest),
-                $this->editAbleFields
-            )
-        );
-
-        return array_diff(
-            $getBaseWhiteListAttributes,
-            array_merge(
-                $this->editAbleFieldsForbbiden,
-                $this->editAbleFieldForbbidenDefault
-            )
-        );
-    }
-
-    /**
      * Finds the CwpalletPallet model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -233,12 +133,17 @@ class D3EditableAction extends Action
      */
     protected function findModel(int $id)
     {
+
+        if (method_exists($this->controller, $this->methodName)) {
+            return $this->controller->{$this->methodName}($id);
+        }
+
         if (!class_exists($this->modelName)) {
-            throw new HttpException(404, Yii::t('crud', 'The requested page does not exist.'));
+            throw new HttpException(404, Yii::t('crud', 'Cannot update this field.'));
         }
 
         if (($model = $this->modelName::findOne($id)) === null) {
-            throw new HttpException(404, Yii::t('crud', 'The requested page does not exist.'));
+            throw new HttpException(404, Yii::t('crud', 'Cannot update this field.'));
         }
         return $model;
     }
@@ -249,7 +154,7 @@ class D3EditableAction extends Action
             'output'  => '',
             'message' => Yii::t(
                 'd3system',
-                'Cannot update this field'
+                'Cannot update this field.'
             )
         ];
     }
