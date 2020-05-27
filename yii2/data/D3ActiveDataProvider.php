@@ -71,6 +71,9 @@ class D3ActiveDataProvider extends ActiveDataProvider
             return ;
         }
         $attribute = $column['attribute'];
+        if(!in_array($attribute,$this->totalAttributes, true)){
+            return;
+        }
         if(!$this->totals){
             $this->loadTotals();
         }
