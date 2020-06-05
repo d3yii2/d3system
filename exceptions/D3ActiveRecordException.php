@@ -52,9 +52,9 @@ class D3ActiveRecordException extends Exception
         }
         if ($flashAttributes && !Yii::$app instanceof Application ) {
             foreach ($model->getErrors() as $attribute => $attributeErrors) {
-                if (!is_array($flashAttributes) || isset($flashAttributes[$attribute])) {
+                if (in_array($attribute, $flashAttributes)) {
                     foreach ($attributeErrors as $error) {
-                        FlashHelper::addWarning($model->getAttributeLabel($attribute) . ': ' . $error);
+                        FlashHelper::addWarning($error);
                         Yii::error($model->getAttributeLabel($attribute) . ': ' . $error, 'serverError');
                     }
                 }
