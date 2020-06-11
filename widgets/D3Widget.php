@@ -16,6 +16,9 @@ class D3Widget extends Widget
      */
     public static function widget($config = [])
     {
+        if(defined('YII_DEBUG') && YII_DEBUG){
+            return parent::widget($config);
+        }
         try {
             return parent::widget($config);
         } catch (Exception $err) {
@@ -29,6 +32,11 @@ class D3Widget extends Widget
      */
     public function run()
     {
+
+        if(defined('YII_DEBUG') && YII_DEBUG){
+            return parent::run();
+        }
+
         try {
             return parent::run();
         } catch (Exception $err) {

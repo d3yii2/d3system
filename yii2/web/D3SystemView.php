@@ -211,6 +211,15 @@ class D3SystemView extends View
         return [];
     }
 
+    public function getLeftMenuFirstItemUrl(string $menuCode){
+        foreach($this->getLeftMenu($menuCode) as $menuItem){
+            if($menuItem['visible'] ?? true){
+                return $menuItem['url'];
+            }
+        }
+        return false;
+    }
+
     public function getLeftMenuCode(): string
     {
         return $this->leftMenuCode;
