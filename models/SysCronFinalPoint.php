@@ -12,30 +12,38 @@ class SysCronFinalPoint extends BaseSysCronFinalPoint
 {
     public static function getFinalPointValue(string $route, $key = null): int
     {
+        $where = ['route' => $route];
+        if($key !== null){
+            $where['key'] = $key;
+        }
+
         return (int)self::find()
             ->select('value')
-            ->where(['route' => $route,
-                     'key' => $key
-            ])
+            ->where($where)
             ->scalar();
     }
 
     public static function getFinalPointValueAsString(string $route, $key = null): string
     {
+        $where = ['route' => $route];
+        if($key !== null){
+            $where['key'] = $key;
+        }
         return (string)self::find()
             ->select('value')
-            ->where(['route' => $route,
-                     'key' => $key
-            ])
+            ->where($where)
             ->scalar();
     }
 
     public static function saveFinalPointValue(string $route, $value, $key = null): void
     {
+        $where = ['route' => $route];
+        if($key !== null){
+            $where['key'] = $key;
+        }
+
         if(!$model = self::find()
-            ->where(['route'=>$route,
-                     'key' => $key
-            ])
+            ->where($where)
             ->one()
         ){
             $model = new self();
