@@ -65,6 +65,18 @@ class D3CommandController extends Controller
         $this->stdout($string . PHP_EOL, $settings);
     }
 
+    /**
+     * output messages list
+     * @param array $list
+     * @param int $settings
+     */
+    public function outList(array $list, int $settings = 0): void
+    {
+        foreach($list as $string){
+            $this->stdout($string . PHP_EOL, $settings);
+        }
+    }
+
     public function debug(string $string, int $settings = 0): void
     {
         if($this->debug){
