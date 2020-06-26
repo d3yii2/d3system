@@ -5,7 +5,7 @@ namespace d3system\helpers;
 
 
 use Yii;
-use yii\web\NotFoundHttpException;
+use yii\base\Exception;
 
 class D3FileHelper
 {
@@ -14,16 +14,20 @@ class D3FileHelper
      * Create a temp file full path
      * @param string $prefix (optional) Name prefix
      * @return string Full temp file path
-     * @throws NotFoundHttpException When tmp directory doesn't exist or failed to create
+     * @throws Exception When tmp directory doesn't exist or failed to create
      */
     public static function getTempFile($prefix = 'temp'): string
     {
-        $tmpDir = Yii::$app->runtimePath . '/tmp';
+        $tmpDir = Yii::$app->runtimePath . '/temp';
 
         if (!is_dir($tmpDir) && (!@mkdir($tmpDir) && !is_dir($tmpDir))) {
-            throw new NotFoundHttpException ('temp directory does not exist');
+            throw new Exception('temp directory does not exist: ' . $tmpDir);
         }
 
-        return tempnam($tmpDir, $prefix);
+        if(!$tempName = tempnam($tmpDir, $prefix)){
+            throw new Exception('Can not create tem file in directory ' . $tmpDir);
+        }
+        return $tempName;
     }
+
 }
