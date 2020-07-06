@@ -30,4 +30,23 @@ class D3FileHelper
         return $tempName;
     }
 
+    /**
+     * Create a temp file full path
+     * @param string $subdir
+     * @param string $fileExtension
+     * @return string Full temp file path
+     * @throws Exception When tmp directory doesn't exist or failed to create
+     */
+    public static function getTimeStampFile(string $subdir,string $fileExtension): string
+    {
+        $dir = Yii::$app->runtimePath . '/' . $subdir;
+
+        if (!is_dir($dir) && (!@mkdir($dir) && !is_dir($dir))) {
+            throw new Exception('temp directory does not exist: ' . $dir);
+        }
+
+
+        return $dir . '/' . date('YmdHis').'.' . $fileExtension;
+    }
+
 }
