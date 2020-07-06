@@ -82,5 +82,10 @@ class D3ActiveDataProvider extends ActiveDataProvider
             return;
         }
         $column['footer'] = $this->getAttributeTotal($attribute);
+        if(!isset($column['footerOptions'])) {
+            $column['footerOptions'] = [
+                'class' => 'decimal'
+            ];
+        }
     }
 }
