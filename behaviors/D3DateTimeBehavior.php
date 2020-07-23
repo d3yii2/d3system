@@ -48,4 +48,24 @@ class D3DateTimeBehavior extends DateTimeBehavior
             ],
         ];
     }
+
+    /**
+     * @param array $behaviors
+     * @param array $attributes
+     * @return array|array[]
+     */
+    public static function addConfigAttributes(array $behaviors,array $attributes): array
+    {
+        if(!isset($behaviors['d3date'])){
+            $behaviors['d3date'] = [
+                'class' => self::class,
+                'attributes' => $attributes,
+            ];
+            return $behaviors;
+        }
+        foreach ($attributes as $attribute) {
+            $behaviors['d3date']['attributes'][] = $attribute;
+        }
+        return $behaviors;
+    }
 }
