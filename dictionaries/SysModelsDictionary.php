@@ -47,7 +47,10 @@ class SysModelsDictionary{
             static function () {
                 $list = [];
                 foreach(self::getClassList() as $id => $className){
-                    if(!class_exists($className) || !method_exists($className,'getLabel')){
+                    if(!class_exists($className)
+                        || !method_exists($className,'getLabel')
+                        || !(new \ReflectionMethod($className,'getLabel'))->isStatic()
+                    ){
                         $path = explode('\\', $className);
                         $list[$id] = array_pop($path);
                         continue;
