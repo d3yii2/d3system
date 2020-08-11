@@ -51,7 +51,7 @@ class D3EditableAction extends Action
     /**
      * @var string
      */
-    private $methodName = 'findModel';
+    public $methodName = 'findModel';
 
     /**
      * @param int $id
