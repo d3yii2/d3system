@@ -49,4 +49,16 @@ class D3FileHelper
         return $dir . '/' . date('YmdHis').'.' . $fileExtension;
     }
 
+    public static function getRuntimeFilePath(string $directory, string $fileName): string
+    {
+        return Yii::$app->runtimePath . '/' . $directory . '/' . $fileName;
+    }
+
+    public static function filePuntContentInRuntime(string $directory, string $fileName, string $content)
+    {
+        $filePath = self::getRuntimeFilePath($directory,$fileName);
+        file_put_contents($filePath, $content);
+    }
+
+
 }
