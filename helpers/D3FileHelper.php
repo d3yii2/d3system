@@ -54,10 +54,16 @@ class D3FileHelper
         return Yii::$app->runtimePath . '/' . $directory . '/' . $fileName;
     }
 
-    public static function filePuntContentInRuntime(string $directory, string $fileName, string $content)
+    public static function filePuntContentInRuntime(string $directory, string $fileName, string $content): void
     {
         $filePath = self::getRuntimeFilePath($directory,$fileName);
         file_put_contents($filePath, $content);
+    }
+
+    public static function fileGetContentFromRuntime(string $directory, string $fileName): string
+    {
+        $filePath = self::getRuntimeFilePath($directory,$fileName);
+        return file_get_contents($filePath);
     }
 
 
