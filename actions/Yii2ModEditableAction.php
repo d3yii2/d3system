@@ -35,6 +35,11 @@ class Yii2ModEditableAction extends Action
     public $preProcess;
 
     /**
+     * @var Closure a function to be called for preparing post value. return prepared value
+     */
+    public $prepareValue;
+
+    /**
      * @var bool whether to create a model if a primary key parameter was not found
      */
     public $forceCreate = false;
@@ -76,8 +81,8 @@ class Yii2ModEditableAction extends Action
         }
 
         $model->setScenario($this->scenario);
-        $model->$attribute = Yii::$app->request->post('value');
 
+        $model->$attribute = $this->readValue();
 
         if ($model->validate([$attribute])) {
             return $model->save(false);
@@ -135,6 +140,16 @@ class Yii2ModEditableAction extends Action
         }
 
         return $model;
+    }
+
+
+    private function readValue()
+    {
+        $value = Yii::$app->request->post('value');
+        if ($this->prepareValue && is_callable($this->prepareValue, true)) {
+            $value = call_user_func($this->prepareValue, $value);
+        }
+        return $value;
     }
 
 }
