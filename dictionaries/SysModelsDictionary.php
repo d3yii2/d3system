@@ -2,6 +2,7 @@
 
 namespace d3system\dictionaries;
 
+use ReflectionMethod;
 use Yii;
 use d3system\models\SysModels;
 use yii\helpers\ArrayHelper;
@@ -21,16 +22,17 @@ class SysModelsDictionary{
             return $id;
         }
 
-        /**
-         * visu laiku lido mistiska kļūda. Pieliku papildus variantu
-         */
         if($model = SysModels::findOne(['class_name' => $className])){
             self::clearCache();
             return $model->id;
         }
 
         $model = new SysModels();
-        $model->table_name = $className::tableName();
+        if(method_exists($className,'tableName')) {
+            $model->table_name = $className::tableName();
+        }else{
+            $model->table_name = '-';
+        }
         $model->class_name = $className;
         if(!$model->save()){
             throw new D3ActiveRecordException($model,'','$list: ' .VarDumper::dumpAsString($list));
@@ -49,7 +51,7 @@ class SysModelsDictionary{
                 foreach(self::getClassList() as $id => $className){
                     if(!class_exists($className)
                         || !method_exists($className,'getLabel')
-                        || !(new \ReflectionMethod($className,'getLabel'))->isStatic()
+                        || !(new ReflectionMethod($className,'getLabel'))->isStatic()
                     ){
                         $path = explode('\\', $className);
                         $list[$id] = array_pop($path);
