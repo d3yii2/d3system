@@ -6,6 +6,7 @@ namespace d3system\helpers;
 
 use Yii;
 use yii\base\Exception;
+use yii\helpers\FileHelper;
 
 class D3FileHelper
 {
@@ -16,7 +17,7 @@ class D3FileHelper
      * @return string Full temp file path
      * @throws Exception When tmp directory doesn't exist or failed to create
      */
-    public static function getTempFile($prefix = 'temp'): string
+    public static function getTempFile(string $prefix = 'temp'): string
     {
         $tmpDir = Yii::$app->runtimePath . '/temp';
 
@@ -51,10 +52,29 @@ class D3FileHelper
 
     public static function getRuntimeFilePath(string $directory, string $fileName): string
     {
-        return Yii::$app->runtimePath . '/' . $directory . '/' . $fileName;
+        $fullPathDirectory = Yii::$app->runtimePath . '/' . $directory;
+        FileHelper::createDirectory($fullPathDirectory);
+        return $fullPathDirectory . '/' . $fileName;
     }
 
+    /**
+     * @param string $directory
+     * @param string $fileName
+     * @param string $content
+     * @deprecated  use D3FileHelper::filePutContentInRuntime()
+     */
     public static function filePuntContentInRuntime(string $directory, string $fileName, string $content): void
+    {
+        $filePath = self::getRuntimeFilePath($directory,$fileName);
+        file_put_contents($filePath, $content);
+    }
+
+    /**
+     * @param string $directory runtime directory subdirectory
+     * @param string $fileName
+     * @param string $content
+     */
+    public static function filePutContentInRuntime(string $directory, string $fileName, string $content): void
     {
         $filePath = self::getRuntimeFilePath($directory,$fileName);
         file_put_contents($filePath, $content);
@@ -63,7 +83,12 @@ class D3FileHelper
     public static function fileGetContentFromRuntime(string $directory, string $fileName): string
     {
         $filePath = self::getRuntimeFilePath($directory,$fileName);
-        return file_get_contents($filePath);
+        try{
+            return file_get_contents($filePath);
+        }catch (\Exception $e){
+            return false;
+        }
+
     }
 
 
