@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace d3system\actions;
 
+use Closure;
 use Yii;
 use yii\base\Action;
 use yii\db\ActiveRecord;
@@ -54,6 +55,17 @@ class D3EditableAction extends Action
     public $methodName = 'findModel';
 
     /**
+     * @var Closure a function to be called previous saving model. The anonymous function is preferable to have the
+     * model passed by reference. This is useful when we need to set model with extra data previous update
+     */
+    public $preProcess;
+
+    /**
+     * @var Closure
+     */
+    public $outPreProcess;
+
+    /**
      * @param int $id
      * @return array|bool
      * @throws HttpException
@@ -92,13 +104,21 @@ class D3EditableAction extends Action
                 return $this->cannotUpdate();
             }
         }
+
         $model->setAttributes($requestPost);
+
+        if ($this->preProcess && is_callable($this->preProcess, true)) {
+            call_user_func($this->preProcess, $model);
+        }
 
         if ($model->save()) {
             // read or convert your posted information
             $output =[];
             foreach ($requestPost as $name => $value) {
                 $output[$name] = $model->$name;
+            }
+            if ($this->outPreProcess && is_callable($this->outPreProcess, true)) {
+                $output = call_user_func($this->outPreProcess, $model, $output);
             }
             if(count($output) === 1){
                 $output = array_values($output)[0];
