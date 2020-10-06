@@ -4,6 +4,7 @@ namespace d3system\yii2\web;
 
 
 use cornernote\returnurl\ReturnUrl;
+use eaBlankonThema\yii2\web\LayoutController;
 use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThButtonDropDown;
 use Exception;
@@ -177,7 +178,7 @@ class D3SystemView extends View
     /**
      * @return array
      */
-    public function getWikiViewUrl(): array
+    public function getWikiViewUrl($partial = false): array
     {
         if(!$id = $this->params['pageWiki'] ?? $this->pageWiki){
             return [];
@@ -185,6 +186,9 @@ class D3SystemView extends View
         $url = $this->wikiViewUrl;
         $url['id'] = $id;
         $url['ru'] = ReturnUrl::getToken($this->title);
+        if ($partial) {
+            $url[LayoutController::LAYOUT_MINIMAL_PARAM] = true;
+        }
         return $url;
     }
 
@@ -310,7 +314,8 @@ class D3SystemView extends View
 
     /**
      * Detect the view is partial (URL contains fancybox param)
-     * @TODO - Fancybox is deprecated and the param name should be changed to more apprioriate
+     * @TODO - Fancybox is deprecated 
+     * Use the eaBlankonThema\yii2\web\LayoutController:: LAYOUT_MINIMAL_PARAM instead
      * @return bool|null
      */
     public function isPartialView(): ?bool
