@@ -27,7 +27,8 @@ class D3SystemView extends View
      * @var string
      */
     public $defaultLeftMenu = 'main';
-
+    public $showLeftSidebar = true;
+    
     public $wikiViewUrl = ['/wiki/content/view'];
 
     /** @var string */
