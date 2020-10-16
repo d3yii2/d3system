@@ -73,11 +73,13 @@ class D3FileHelper
      * @param string $directory runtime directory subdirectory
      * @param string $fileName
      * @param string $content
+     * @return string
      */
-    public static function filePutContentInRuntime(string $directory, string $fileName, string $content): void
+    public static function filePutContentInRuntime(string $directory, string $fileName, string $content): string
     {
         $filePath = self::getRuntimeFilePath($directory,$fileName);
         file_put_contents($filePath, $content);
+        return $filePath;
     }
 
     public static function fileGetContentFromRuntime(string $directory, string $fileName): string
