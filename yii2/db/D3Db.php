@@ -17,7 +17,7 @@ class D3Db
 
     public static function clone(string $name = 'default'): Connection
     {
-        if(self::$dbConnection[$name]){
+        if(isset(self::$dbConnection[$name])){
             return self::$dbConnection[$name];
         }
         $db = Yii::$app->db;
