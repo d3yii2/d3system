@@ -9,10 +9,19 @@ use Yii\db\Connection;
 
 class D3Db
 {
-    public static function clone(): Connection
+
+    /**
+     * @var Connection[]
+     */
+    private static $dbConnection = [];
+
+    public static function clone(string $name = 'default'): Connection
     {
+        if(self::$dbConnection[$name]){
+            return self::$dbConnection[$name];
+        }
         $db = Yii::$app->db;
-        return new Connection([
+        return self::$dbConnection[$name] = new Connection([
             'dsn' => $db->dsn,
             'username' => $db->username,
             'password' => $db->password,
