@@ -57,6 +57,13 @@ class D3FileHelper
         return $fullPathDirectory . '/' . $fileName;
     }
 
+    public static function getRuntimeDirectoryPath(string $directory): string
+    {
+        $fullPathDirectory = Yii::$app->runtimePath . '/' . $directory;
+        FileHelper::createDirectory($fullPathDirectory);
+        return $fullPathDirectory;
+    }
+
     /**
      * @param string $directory
      * @param string $fileName
