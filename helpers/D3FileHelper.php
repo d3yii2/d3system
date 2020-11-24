@@ -89,7 +89,14 @@ class D3FileHelper
         return $filePath;
     }
 
-    public static function fileGetContentFromRuntime(string $directory, string $fileName): string
+    public static function fileUnlinkInRuntime(string $directory, string $fileName): string
+    {
+        $filePath = self::getRuntimeFilePath($directory,$fileName);
+        unlink($filePath);
+        return $filePath;
+    }
+
+    public static function fileGetContentFromRuntime(string $directory, string $fileName)
     {
         $filePath = self::getRuntimeFilePath($directory,$fileName);
         try{
