@@ -60,6 +60,7 @@ class D3ActiveDataProvider extends ActiveDataProvider
             }
             $this->totalQuery = clone $this->query;
             $this->totalQuery->select($select);
+            $this->totalQuery->groupBy = null;
         }
         $this->totals = $this->totalQuery->asArray()->one();
     }
