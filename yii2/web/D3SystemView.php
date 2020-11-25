@@ -61,7 +61,8 @@ class D3SystemView extends View
      * ]
      */
     private $exportButtonList = [];
-
+    
+    private $showHeader = true;
 
     public function init()
     {
@@ -322,5 +323,23 @@ class D3SystemView extends View
     public function isPartialView(): ?bool
     {
         return Yii::$app->request->get('fancybox');
+    }
+    
+    /**
+     * @return bool
+     */
+    public function headerEnabled()
+    {
+        return $this->showHeader;
+    }
+    
+    public function showHeader()
+    {
+        $this->showHeader = true;
+    }
+
+    public function hideHeader()
+    {
+        $this->showHeader = false;
     }
 }
