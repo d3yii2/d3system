@@ -119,19 +119,15 @@ class D3SystemView extends View
                     . $this->exportButtonList[0]['label'],
                 'icon' => ThButton::ICON_DOWNLOAD,
                 'type' => ThButton::TYPE_SUCCESS,
-                'link' => $this->exportButtonList[0]['url'],
-                'htmlOptions' => ['class' => 'export-btn'],
+                'link' => $this->exportButtonList[0]['url']
             ]);
-            $this->registerExportRestrictionJs();
         }elseif(count($this->exportButtonList) > 1){
             $this->finalPageButtonsRight[] = ThButtonDropDown::widget([
                 'label' => Yii::t('d3system','Export'),
                 'icon' => ThButton::ICON_DOWNLOAD,
                 'type' => ThButton::TYPE_SUCCESS,
-                'items' => $this->exportButtonList,
-                'htmlOptions' => ['class' => 'export-dropdown'],
+                'items' => $this->exportButtonList
             ]);
-            $this->registerExportRestrictionJs();
         }
 
         if($this->settingButtonUrl){
@@ -145,26 +141,7 @@ class D3SystemView extends View
 
         return $this->finalPageButtonsRight;
     }
-    
-    /**
-     * Restrict export limit to 1000 rows
-     */
-    public function registerExportRestrictionJs()
-    {
-        //TODO - add the the same for single export button
-        $js = '$(".export-dropdown").next(".dropdown-menu").find("a").on("click", function(e){
-            var actionFooterCounter = $(".action-footer").text();
-            if (actionFooterCounter && actionFooterCounter > 1000) {
-                alert("Export is limited to 1000 rows. Filter the results to minimize");
-                e.preventDefault();
-                return false;
-            }
-        });';
-        
-        Yii::$app->view->registerJs($js, View::POS_END);
-    }
-    
-    
+
     /**
      * @param string $pageButtonsRight
      */
