@@ -209,8 +209,9 @@ class D3SystemView extends View
     public function getLeftMenu(string $menuCode = ''): array
     {
         if(!$menuCode){
-            $menuCode = $this->leftMenuCode;
+            $menuCode = $this->getLeftMenuCode();
         }
+
         if(isset($this->leftMenuFiles[$menuCode])){
             return require Yii::getAlias($this->leftMenuFiles[$menuCode]);
         }
@@ -228,7 +229,11 @@ class D3SystemView extends View
 
     public function getLeftMenuCode(): string
     {
-        return $this->leftMenuCode;
+        $menuCode = $this->leftMenuCode;
+        if(!$menuCode && $this->context->module->leftMenu){
+            $menuCode = $this->context->module->leftMenu;
+        }
+        return $menuCode;
     }
 
     /**
