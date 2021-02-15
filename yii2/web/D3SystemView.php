@@ -212,7 +212,15 @@ class D3SystemView extends View
             $menuCode = $this->getLeftMenuCode();
         }
 
+        if(class_exists($menuCode)){
+            $menu = new $menuCode();
+            return $menu->list();
+        }
         if(isset($this->leftMenuFiles[$menuCode])){
+            if(class_exists($this->leftMenuFiles[$menuCode])){
+                $menu = new $this->leftMenuFiles[$menuCode]();
+                return $menu->list();
+            }
             return require Yii::getAlias($this->leftMenuFiles[$menuCode]);
         }
         return [];
