@@ -10,10 +10,16 @@ class D3Module extends Module
 {
     public $configFilePath;
 
+
     /**
      * @var array panels for PanelWidgets
      */
     public $panels;
+
+    /**
+     * @var define Left Menu code or class
+     */
+    public $leftMenu;
 
     public function __construct($id, $parent = null, $config = [])
     {

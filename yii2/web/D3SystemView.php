@@ -239,6 +239,12 @@ class D3SystemView extends View
     {
         $menuCode = $this->leftMenuCode;
         if(!$menuCode
+            && isset($this->context->leftMenu)
+            && $this->context->leftMenu
+        ){
+            $menuCode = $this->context->leftMenu;
+        }
+        if(!$menuCode
             && isset($this->context->module->leftMenu)
             && $this->context->module->leftMenu
         ){
