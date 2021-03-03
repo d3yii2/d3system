@@ -31,6 +31,8 @@ class D3SystemView extends View
     
     public $wikiViewUrl = ['/wiki/content/view'];
 
+    public $settings = [];
+
     /** @var string */
     private $leftMenuCode;
 
