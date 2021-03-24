@@ -118,7 +118,7 @@ class D3EditableAction extends Action
                 $output[$name] = $model->$name;
             }
             if ($this->outPreProcess && is_callable($this->outPreProcess, true)) {
-                $output = call_user_func($this->outPreProcess, $model, $output);
+                $output = call_user_func($this->outPreProcess, $model, $output, $name);
             }
             if(count($output) === 1){
                 $output = array_values($output)[0];
