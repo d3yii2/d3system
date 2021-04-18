@@ -5,6 +5,7 @@ namespace d3system\yii2\data;
 
 
 
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\db\QueryInterface;
 
@@ -23,6 +24,35 @@ class D3ActiveDataProvider extends ActiveDataProvider
     /** @var int[]|float[]  */
     private $totals = [];
 
+    public function setPagination($value)
+    {
+        if (is_array($value)) {
+            $config = ['class' => D3Pagination::class];
+            if ($this->id !== null) {
+                $config['pageParam'] = $this->id . '-page';
+                $config['pageSizeParam'] = $this->id . '-per-page';
+            }
+            $pagination = Yii::createObject(array_merge($config, $value));
+            parent::setPagination($pagination);
+            return;
+        }
+        parent::setPagination($value);
+
+    }
+
+    public function setSort($value)
+    {
+        if (is_array($value)) {
+            $config = ['class' =>D3Sort::class];
+            if ($this->id !== null) {
+                $config['sortParam'] = $this->id . '-sort';
+            }
+            $sort = Yii::createObject(array_merge($config, $value));
+            parent::setSort($sort);
+            return;
+        }
+        parent::setSort($value);
+    }
 
     public function getTotalCount()
     {
