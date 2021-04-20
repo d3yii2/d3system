@@ -4,6 +4,8 @@ namespace d3system\models;
 
 use d3system\dictionaries\SysModelsDictionary;
 use d3system\exceptions\D3ActiveRecordException;
+use d3system\yii2\db\D3Db;
+use Yii;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
@@ -14,8 +16,13 @@ use yii\helpers\ArrayHelper;
  * @property string $table_name Table
  * @property string $class_name Class
  */
-class SysModels extends \yii\db\ActiveRecord
+class SysModels extends ActiveRecord
 {
+
+    public static function getDb()
+    {
+        return D3Db::clone();
+    }
     /**
      * {@inheritdoc}
      */
@@ -42,10 +49,10 @@ class SysModels extends \yii\db\ActiveRecord
         $data = self::find()->asArray()->all();
 
         $list =  ArrayHelper::map($data,'class_name','id');
-        \Yii::$app->cache->set($cacheKey.'ByClassName', $list, $cacheDuration);
+        Yii::$app->cache->set($cacheKey.'ByClassName', $list, $cacheDuration);
 
         $list =  ArrayHelper::map($data,'table_name','id');
-        \Yii::$app->cache->set($cacheKey.'ByTableName', $list, $cacheDuration);
+        Yii::$app->cache->set($cacheKey.'ByTableName', $list, $cacheDuration);
 
         return $list;
     }
@@ -54,16 +61,16 @@ class SysModels extends \yii\db\ActiveRecord
     {
 
         $list =  ArrayHelper::map(self::find()->asArray()->all(),'table_name','id');
-        \Yii::$app->cache->set($cacheKey, $list, $cacheDuration);
+        Yii::$app->cache->set($cacheKey, $list, $cacheDuration);
         return $list;
     }
 
 
     /**
-     * @param ActiveRecord $model
+     * @param ActiveRecord|object $model
      * @throws D3ActiveRecordException
      */
-    public static function addRecord($model): void
+    public static function addRecord(object $model): void
     {
         $record = new self();
         $record->table_name = $model->tableName();
