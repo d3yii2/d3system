@@ -2,6 +2,7 @@
 
 namespace d3system\exceptions;
 
+use ConsoleApplication;
 use eaBlankonThema\components\FlashHelper;
 use Yii;
 use yii\base\Exception;
@@ -20,9 +21,10 @@ class D3ActiveRecordException extends Exception
     /**
      * D3ModelException constructor.
      * @param ActiveRecord $model
-     * @param string $flashMessage message for displaying in flash
+     * @param string|null $flashMessage message for displaying in flash
      * @param string|false $loggingMessage logging message. If false, do not log
      * @param array|bool $flashAttributes list attributes for displaying in flash. If false, do not show. If true, show all
+     * @param string $errorCategory
      */
     public function __construct(
         $model,
@@ -65,7 +67,7 @@ class D3ActiveRecordException extends Exception
                 }
             }
         }
-        if(Yii::$app instanceof Application){
+        if(Yii::$app instanceof ConsoleApplication){
             echo $modelErrors . PHP_EOL;
         }
         parent::__construct($flashMessage);
