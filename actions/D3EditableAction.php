@@ -70,7 +70,7 @@ class D3EditableAction extends Action
      * @return array|bool
      * @throws HttpException
      */
-    final public function run(int $id)
+    public function run(int $id)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $request                    = Yii::$app->request;
