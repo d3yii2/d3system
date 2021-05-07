@@ -152,6 +152,17 @@ public function actions()
              'modelName'               => AudAuditor::class,
              'editAbleFields'          => ['status','notes'],
              'editAbleFieldsForbbiden' => $this->editAbleFieldsForbbiden,
+             'preProcess' => static function (Inout $model) {
+                  if ($model->isAttributeChanged('driver')) {
+                     $model->driver = iconv('UTF-8', 'ASCII//TRANSLIT',$model->driver);
+                  }   
+             },
+             'outPreProcess' => static function (ContInout $model, array $output) {
+                 if (isset($output['ediBookingId'])) {
+                     $output['ediBookingId'] = DepoEdiBookingDictionary::getIdLabel($output['ediBookingId']);
+                 }
+                 return $output;
+             }             
         ],
     ];
 }
