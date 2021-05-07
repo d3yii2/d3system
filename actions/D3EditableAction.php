@@ -112,6 +112,7 @@ class D3EditableAction extends Action
         }
 
         if ($model->save()) {
+            $this->afterSave($model,$requestPost);
             // read or convert your posted information
             $output =[];
             foreach ($requestPost as $name => $value) {
@@ -177,5 +178,10 @@ class D3EditableAction extends Action
                 'Cannot update this field.'
             )
         ];
+    }
+
+    public function afterSave($model, array $requestPost): void
+    {
+
     }
 }
