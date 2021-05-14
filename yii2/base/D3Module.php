@@ -25,7 +25,7 @@ class D3Module extends Module
     public $panels;
 
     /**
-     * @var define Left Menu code or class
+     * @var string Left Menu code or class
      */
     public $leftMenu;
 
