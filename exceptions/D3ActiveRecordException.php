@@ -20,7 +20,7 @@ class D3ActiveRecordException extends Exception
 {
     /**
      * D3ModelException constructor.
-     * @param ActiveRecord $model
+     * @param ActiveRecord|Object $model
      * @param string|null $flashMessage message for displaying in flash
      * @param string|false $loggingMessage logging message. If false, do not log
      * @param array|bool $flashAttributes list attributes for displaying in flash. If false, do not show. If true, show all
