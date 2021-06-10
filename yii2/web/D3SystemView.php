@@ -9,6 +9,7 @@ use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThButtonDropDown;
 use Exception;
 use Yii;
+use yii\web\AssetBundle;
 use yii\web\View;
 
 /**
@@ -32,6 +33,9 @@ class D3SystemView extends View
     public $wikiViewUrl = ['/wiki/content/view'];
 
     public $settings = [];
+
+    /** @var string */
+    public $defaultAssetsClass = 'ea\app\AppAsset';
 
     /** @var string */
     private $leftMenuCode;
@@ -366,4 +370,13 @@ class D3SystemView extends View
     {
         $this->showHeader = false;
     }
+
+    public function registerDefaultAssets()
+    {
+        /** @var AssetBundle $assetClass */
+        $assetClass = $this->defaultAssetsClass;
+        return $assetClass::register($this);
+
+    }
+
 }
