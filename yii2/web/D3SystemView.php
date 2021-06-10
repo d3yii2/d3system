@@ -243,20 +243,17 @@ class D3SystemView extends View
 
     public function getLeftMenuCode(): string
     {
-        $menuCode = $this->leftMenuCode;
-        if(!$menuCode
-            && isset($this->context->leftMenu)
-            && $this->context->leftMenu
-        ){
-            $menuCode = $this->context->leftMenu;
+        if ($this->leftMenuCode) {
+            return $this->leftMenuCode;
         }
-        if(!$menuCode
-            && isset($this->context->module->leftMenu)
-            && $this->context->module->leftMenu
-        ){
-            $menuCode = $this->context->module->leftMenu;
+        if (isset($this->context->leftMenu) && $this->context->leftMenu) {
+            return $this->leftMenuCode = $this->context->leftMenu;
         }
-        return $menuCode;
+        if (isset($this->context->module->leftMenu) && $this->context->module->leftMenu) {
+            return $this->leftMenuCode = $this->context->module->leftMenu;
+        }
+
+        return $this->leftMenuCode = '';
     }
 
     /**
