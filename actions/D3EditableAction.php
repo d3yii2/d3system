@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace d3system\actions;
 
 use Closure;
+use d3system\exceptions\D3UserAlertException;
 use Yii;
 use yii\base\Action;
 use yii\db\ActiveRecord;
@@ -74,6 +75,7 @@ class D3EditableAction extends Action
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $request                    = Yii::$app->request;
+        $errors = [];
 
         $requestPost = $request->post();
         // Check if there is an Editable ajax request
@@ -111,27 +113,31 @@ class D3EditableAction extends Action
             call_user_func($this->preProcess, $model);
         }
 
-        if ($model->save()) {
-            $this->afterSave($model,$requestPost);
-            // read or convert your posted information
-            $output =[];
-            foreach ($requestPost as $name => $value) {
-                $output[$name] = $model->$name;
+        try {
+            if ($model->save()) {
+                $this->afterSave($model,$requestPost);
+                // read or convert your posted information
+                $output =[];
+                foreach ($requestPost as $name => $value) {
+                    $output[$name] = $model->$name;
+                }
+                if ($this->outPreProcess && is_callable($this->outPreProcess, true)) {
+                    $output = call_user_func($this->outPreProcess, $model, $output, $name);
+                }
+                if(count($output) === 1){
+                    $output = array_values($output)[0];
+                }
+                // return JSON encoded output in the below format
+                return [
+                    'output'  => $output,
+                    'message' => ''
+                ];
             }
-            if ($this->outPreProcess && is_callable($this->outPreProcess, true)) {
-                $output = call_user_func($this->outPreProcess, $model, $output, $name);
-            }
-            if(count($output) === 1){
-                $output = array_values($output)[0];
-            }
-            // return JSON encoded output in the below format
-            return [
-                'output'  => $output,
-                'message' => ''
-            ];
+        } catch (D3UserAlertException $e) {
+            $errors[] = $e->getMessage();
         }
 
-        $errors = [];
+
         foreach ($model->errors as $field => $messages) {
             foreach ($messages as $message) {
                 $errors[] = $model->getAttributeLabel($field)
