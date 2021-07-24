@@ -109,11 +109,11 @@ class D3EditableAction extends Action
 
         $model->setAttributes($requestPost);
 
-        if ($this->preProcess && is_callable($this->preProcess, true)) {
-            call_user_func($this->preProcess, $model);
-        }
-
         try {
+            if ($this->preProcess && is_callable($this->preProcess, true)) {
+                call_user_func($this->preProcess, $model);
+            }
+
             if ($model->save()) {
                 $this->afterSave($model,$requestPost);
                 // read or convert your posted information
