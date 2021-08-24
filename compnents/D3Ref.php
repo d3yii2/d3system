@@ -9,8 +9,11 @@ class D3Ref extends Component
 {
     public $definition;
 
-    public function getLabel(int $modelId, int $recordId)
+    public function getLabel(?int $modelId, ?int $recordId)
     {
+        if (!$modelId) {
+            return '';
+        }
         $modelLabel = 'ModelId: ' . $modelId;
         $recordLabel = 'ModelRecordId: ' . $recordId;
         if (!$className = SysModelsDictionary::getClassList()[$modelId] ?? false) {
@@ -46,8 +49,12 @@ class D3Ref extends Component
         return $modelLabel . ' ' . $recordLabel;
     }
 
-    public function getUrl(int $modelId, int $recordId)
+    public function getUrl(?int $modelId, ?int $recordId)
     {
+        if (!$modelId) {
+            return null;
+        }
+
         if (!$className = SysModelsDictionary::getClassList()[$modelId] ?? false) {
             return null;
         }
