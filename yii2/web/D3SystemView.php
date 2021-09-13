@@ -214,16 +214,16 @@ class D3SystemView extends View
      */
     public function getLeftMenu(string $menuCode = ''): array
     {
-        if(!$menuCode){
+        if (!$menuCode) {
             $menuCode = $this->getLeftMenuCode();
         }
 
-        if(class_exists($menuCode)){
+        if (class_exists($menuCode)) {
             $menu = new $menuCode();
             return $menu->list();
         }
-        if(isset($this->leftMenuFiles[$menuCode])){
-            if(class_exists($this->leftMenuFiles[$menuCode])){
+        if (isset($this->leftMenuFiles[$menuCode])) {
+            if (class_exists($this->leftMenuFiles[$menuCode])) {
                 $menu = new $this->leftMenuFiles[$menuCode]();
                 return $menu->list();
             }
@@ -232,7 +232,8 @@ class D3SystemView extends View
         return [];
     }
 
-    public function getLeftMenuFirstItemUrl(string $menuCode){
+    public function getLeftMenuFirstItemUrl (string $menuCode)
+    {
         foreach($this->getLeftMenu($menuCode) as $menuItem){
             if($menuItem['visible'] ?? true){
                 return $menuItem['url'];
