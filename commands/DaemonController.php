@@ -21,12 +21,12 @@ class DaemonController extends D3CommandController
     /**
      * @var float|int $sleepAfterMicroseconds
      */
-    public $sleepAfterMicroseconds = 1 * 1000000; //1 second
+    public $sleepAfterMicroseconds = 10 * 1000000; //10 seconds
     
     /**
      * @var int $loopTimeLimit
      */
-    public $loopTimeLimit = 4; //60 sec
+    public $loopTimeLimit = 60; //60 seconds
     
     /**
      * @var int $idleAfterSeconds
