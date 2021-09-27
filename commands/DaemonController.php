@@ -6,22 +6,46 @@ use cewood\cwkalte\models\data\StatusData;
 use d3system\exceptions\D3TaskException;
 use d3system\compnents\D3CommandTask;
 use DateTime;
+use Exception;
 use Yii;
 use yii\console\ExitCode;
 
 
 class DaemonController extends D3CommandController
 {
-    // @TODO - should be configurable
-    private const MEMORY_LIMIT = 268435456; //256MB
-    private const SLEEP_MICROSECONDS = 1 * 1000000; //1 second
-    private const RESTART_SECONDS = 20 * 60; //20 min
-    private const LOOP_TIME_LIMIT = 4; //60 sec
-    private const IDLE_AFTER_SEC = 60;
-    private const IDLE_REGUIRE_READ_SEC = 60;
-    private const STATUS_READ_LOG_SEC = 60;
+    /**
+     * @var int $memoryLimit
+     */
+    public $memoryLimit = 268435456; //256MB
     
+    /**
+     * @var float|int $sleepAfterMicroseconds
+     */
+    public $sleepAfterMicroseconds = 1 * 1000000; //1 second
+    
+    /**
+     * @var int $loopTimeLimit
+     */
+    public $loopTimeLimit = 4; //60 sec
+    
+    /**
+     * @var int $idleAfterSeconds
+     */
+    public $idleAfterSeconds = 60;
+    
+    /**
+     * @var int $idleRequireReadSeconds
+     */
+    public $idleRequireReadSeconds = 60;
+    
+    /**
+     * @var bool|null $recconectDb
+     */
     public $recconectDb;
+    
+    //@TODO
+    public $restartAfterSeconds = 20 * 60; //20 min
+    public $statusReadLogSeconds = 60;
     
     /**
      * @var D3CommandTask $task
@@ -37,28 +61,34 @@ class DaemonController extends D3CommandController
     public function actionIndex(): int
     {
         $this->task = $this->getTask();
-    
+        
         ini_set('memory_limit', '300M');
+        
         $loopCnt = 0;
         $lastPlateCountChange = new DateTime();
         $lastStatusReadTime = new DateTime();
+        
         /** @var StatusData $statusPrevResetet */
         while (true) {
+            
             /**
              * Maximal time limit for loop execution
              */
             $now = new DateTime();
-            set_time_limit(self::LOOP_TIME_LIMIT);
+            set_time_limit($this->loopTimeLimit);
             $loopCnt++;
+            
             /**
              * ending every 20 minutes
              */
-            if ($loopCnt > self::RESTART_SECONDS) {
+            if ($loopCnt > $this->restartAfterSeconds) {
                 $this->out('Exit for restart. $loopCnt=' . $loopCnt);
                 return ExitCode::OK;
             }
-            usleep(self::SLEEP_MICROSECONDS);
-            if ($loopCnt % 60 === 0) {
+            
+            usleep($this->sleepAfterMicroseconds);
+            
+            if (0 === $loopCnt % 60) {
                 $this->out('');
                 $this->out('memory usage: ' . memory_get_usage());
                 $this->out('$loopCnt: ' . $loopCnt);
@@ -69,14 +99,14 @@ class DaemonController extends D3CommandController
                     Yii::$app->db->open();
                 }
             }
-            if (memory_get_usage() > self::MEMORY_LIMIT) {
-                $this->out('memory limit reached: ' . self::MEMORY_LIMIT . ' actual:  ' . memory_get_usage() . ' exit');
+            
+            if (memory_get_usage() > $this->memoryLimit) {
+                $this->out('memory limit reached: ' . $this->memoryLimit . ' actual:  ' . memory_get_usage() . ' exit');
                 return ExitCode::OK;
             }
             
-            $isIdle = ($now->getTimestamp() - $lastPlateCountChange->getTimestamp()) > self::IDLE_AFTER_SEC;
-            
-            $requireRead = ($now->getTimestamp() - $lastStatusReadTime->getTimestamp()) > self::IDLE_REGUIRE_READ_SEC;
+            $isIdle = ($now->getTimestamp() - $lastPlateCountChange->getTimestamp()) > $this->idleAfterSeconds;
+            $requireRead = ($now->getTimestamp() - $lastStatusReadTime->getTimestamp()) > $this->idleRequireReadSeconds;
             if ($isIdle && !$requireRead) {
                 $this->stdout('.');
                 continue;
@@ -109,11 +139,11 @@ class DaemonController extends D3CommandController
                 Yii::$app->cache->set('PrinterDaemonTaskError',$cacheError,60);
                 unset($e);*/
                 continue;
-            } catch (\Exception $e) {
-                Yii::error($e->getMessage());
-                $this->out($e->getMessage());
-                $this->out(get_class($e));
-                $this->out($e->getTraceAsString());
+            } catch (Exception $e) {
+                $errMsg = $e->getMessage() . PHP_EOL . get_class($e) . PHP_EOL . $e->getTraceAsString();
+                
+                Yii::error($errMsg);
+                $this->out($errMsg);
                 unset($e);
                 continue;
             }
@@ -121,7 +151,7 @@ class DaemonController extends D3CommandController
     }
     
     /**
-     * @return \d3system\compnents\D3CommandTask
+     * @return D3CommandTask
      */
     public function getTask(): D3CommandTask
     {
