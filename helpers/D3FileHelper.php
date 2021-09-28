@@ -133,6 +133,15 @@ class D3FileHelper
     /**
      * @throws \yii\base\Exception
      */
+    public static function fileExist(string $directory, string $fileName): bool
+    {
+        $filePath = self::getRuntimeFilePath($directory,$fileName);
+        return file_exists($filePath);
+    }
+
+    /**
+     * @throws \yii\base\Exception
+     */
     public static function getDirectoryFiles(string $directory)
     {
         $directoryPath = self::getRuntimeDirectoryPath($directory);
