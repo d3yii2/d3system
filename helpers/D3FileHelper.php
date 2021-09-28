@@ -35,8 +35,10 @@ class D3FileHelper
      * Create a temp file full path
      * @param string $subdir
      * @param string $fileExtension
+     * @param string $filePrefix
+     * @param string $fileSuffix
      * @return string Full temp file path
-     * @throws Exception When tmp directory doesn't exist or failed to create
+     * @throws \yii\base\Exception When tmp directory doesn't exist or failed to create
      */
     public static function getTimeStampFile(
         string $subdir,
@@ -55,6 +57,9 @@ class D3FileHelper
         return $dir . '/' . $filePrefix . date('YmdHis').$fileSuffix.'.' . $fileExtension;
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public static function getRuntimeFilePath(string $directory, string $fileName): string
     {
         $fullPathDirectory = Yii::$app->runtimePath . '/' . $directory;
@@ -62,6 +67,9 @@ class D3FileHelper
         return $fullPathDirectory . '/' . $fileName;
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public static function getRuntimeDirectoryPath(string $directory): string
     {
         $fullPathDirectory = Yii::$app->runtimePath . '/' . $directory;
@@ -73,6 +81,7 @@ class D3FileHelper
      * @param string $directory
      * @param string $fileName
      * @param string $content
+     * @throws \yii\base\Exception
      * @deprecated  use D3FileHelper::filePutContentInRuntime()
      */
     public static function filePuntContentInRuntime(string $directory, string $fileName, string $content): void
@@ -86,6 +95,7 @@ class D3FileHelper
      * @param string $fileName
      * @param string $content
      * @return string
+     * @throws \yii\base\Exception
      */
     public static function filePutContentInRuntime(string $directory, string $fileName, string $content): string
     {
@@ -94,13 +104,21 @@ class D3FileHelper
         return $filePath;
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public static function fileUnlinkInRuntime(string $directory, string $fileName): string
     {
-        $filePath = self::getRuntimeFilePath($directory,$fileName);
-        unlink($filePath);
+        $filePath = self::getRuntimeFilePath($directory, $fileName);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
         return $filePath;
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public static function fileGetContentFromRuntime(string $directory, string $fileName)
     {
         $filePath = self::getRuntimeFilePath($directory,$fileName);
@@ -112,5 +130,13 @@ class D3FileHelper
 
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
+    public static function getDirectoryFiles(string $directory)
+    {
+        $directoryPath = self::getRuntimeDirectoryPath($directory);
+        return glob($directoryPath . '/*');
+    }
 
 }
