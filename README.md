@@ -6,6 +6,31 @@
 composer require d3yii2/d3system dev-master
 ```
 
+## module configuration in seperate configfile
+Module extend from  D3Module
+```php
+class Module extends D3Module 
+{
+}
+```
+
+In configuration file define only path
+```php 
+        'd3persons' => [
+            'class' => 'yii2d3\d3persons\Module',
+            'configFilePath' => __DIR__ .'/module_d3persons.php'
+        ],
+```
+
+In module configuration file add module class for IDE suggester
+```php 
+return [
+    'class' => 'yii2d3\d3persons\Module',
+    'ownerExpire' => '+10 years',
+    'userExpire' => '+10 days',
+];    
+```
+
 ## Configuration
 add translation
 ```php

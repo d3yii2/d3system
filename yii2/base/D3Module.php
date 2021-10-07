@@ -1,11 +1,10 @@
 <?php
 
-
 namespace d3system\yii2\base;
-
 
 use d3yii2\d3activity\components\ActivityRegistar;
 use d3yii2\d3activity\components\DummyActivityRegistar;
+use Yii;
 use yii\base\Module;
 
 /**
@@ -31,14 +30,20 @@ class D3Module extends Module
 
     public function __construct($id, $parent = null, $config = [])
     {
+
+        /** load config from module config file */
         if(isset($config['configFilePath'])){
-            $config = array_merge($config,include $config['configFilePath']);
+            $configFileData = include $config['configFilePath'];
+            if (isset($configFileData['class'])) {
+                unset($configFileData['class']);
+            }
+            $config = array_merge($config, $configFileData);
         }
 
         /**
          * if in config no defined component activityRegistar, set dummy registar
          */
-        if(!isset($config['components']['activityRegistar']) && !\Yii::$app->has('activityRegistar')){
+        if(!isset($config['components']['activityRegistar']) && !Yii::$app->has('activityRegistar')){
             $config['components']['activityRegistar'] = DummyActivityRegistar::class;
         }
         parent::__construct($id, $parent, $config);
