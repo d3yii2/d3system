@@ -30,17 +30,10 @@ class D3ActiveRecordException extends Exception
         $model,
         string $flashMessage = null,
         string $loggingMessage = '',
-         $flashAttributes = false,
+        $flashAttributes = false,
         string $errorCategory = ''
-
-    )
-    {
-
-        if (!$flashMessage) {
-            $flashMessage = Yii::t('d3system', 'Database error');
-        }
-
-        if(!$errorCategory){
+    ) {
+        if (!$errorCategory) {
             $errorCategory = 'D3ActiveRecord';
         }
 
@@ -57,20 +50,27 @@ class D3ActiveRecordException extends Exception
             $logger = Yii::getLogger();
             $logger->log($modelErrors, Logger::LEVEL_TRACE, $errorCategory);
         }
-        if ($flashAttributes && !Yii::$app instanceof Application ) {
+        if ($flashAttributes && !Yii::$app instanceof Application) {
             foreach ($model->getErrors() as $attribute => $attributeErrors) {
-                if (in_array($attribute, $flashAttributes)) {
+                if ($flashAttributes === true || in_array($attribute, $flashAttributes, true)) {
                     foreach ($attributeErrors as $error) {
+                        if (!$flashMessage) {
+                            $flashMessage = $error;
+                        }
                         FlashHelper::addWarning($error);
                         Yii::error($model->getAttributeLabel($attribute) . ': ' . $error, $errorCategory);
                     }
                 }
             }
         }
-        if(Yii::$app instanceof ConsoleApplication){
+
+        if (!$flashMessage) {
+            $flashMessage = Yii::t('d3system', 'Database error');
+        }
+
+        if (Yii::$app instanceof ConsoleApplication) {
             echo $modelErrors . PHP_EOL;
         }
         parent::__construct($flashMessage);
     }
-
 }
