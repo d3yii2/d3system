@@ -44,21 +44,24 @@ class D3ActiveRecordException extends Exception
             . ' Errors: ' . VarDumper::export($model->getErrors()) . PHP_EOL
             . ' Attributes: ' . VarDumper::export($model->attributes);
 
+        $logErrors = [];
         if ($loggingMessage !== false) {
-            Yii::error($flashMessage, $errorCategory);
-            Yii::error($modelErrors, $errorCategory);
+            $logErrors[] = 'flashMessage: ' . $flashMessage;
+            $logErrors[] = 'modelErrors: ' . $modelErrors;
             $logger = Yii::getLogger();
             $logger->log($modelErrors, Logger::LEVEL_TRACE, $errorCategory);
         }
-        if ($flashAttributes && !Yii::$app instanceof Application) {
+        if ($flashAttributes) {
             foreach ($model->getErrors() as $attribute => $attributeErrors) {
                 if ($flashAttributes === true || in_array($attribute, $flashAttributes, true)) {
                     foreach ($attributeErrors as $error) {
                         if (!$flashMessage) {
                             $flashMessage = $error;
                         }
-                        FlashHelper::addWarning($error);
-                        Yii::error($model->getAttributeLabel($attribute) . ': ' . $error, $errorCategory);
+                        if (!Yii::$app instanceof Application) {
+                            FlashHelper::addWarning($error);
+                        }
+                        $logErrors[] = $model->getAttributeLabel($attribute) . ': ' . $error;
                     }
                 }
             }
@@ -70,6 +73,10 @@ class D3ActiveRecordException extends Exception
 
         if (Yii::$app instanceof ConsoleApplication) {
             echo $modelErrors . PHP_EOL;
+        }
+
+        if ($logErrors) {
+            Yii::error(implode(PHP_EOL, $logErrors), $errorCategory);
         }
         parent::__construct($flashMessage);
     }
