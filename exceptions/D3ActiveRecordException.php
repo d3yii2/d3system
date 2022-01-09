@@ -40,7 +40,6 @@ class D3ActiveRecordException extends Exception
         $modelErrors = 'Can\'t save ' . get_class($model) . PHP_EOL
             . ' Logging Message: ' . $loggingMessage . PHP_EOL
             . ' Flash Message: ' . $flashMessage . PHP_EOL
-            . ' Message: ' . ($loggingMessage ?: $flashMessage) . PHP_EOL
             . ' Errors: ' . VarDumper::export($model->getErrors()) . PHP_EOL
             . ' Attributes: ' . VarDumper::export($model->attributes);
 
