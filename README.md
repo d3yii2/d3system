@@ -77,7 +77,7 @@ Usage:
 
 ```
 
-### Compnent commands{#compnentCommands}
+### Compnent commands {#compnentCommands}
 
 d3system must be defined as module in console config
 ```php
