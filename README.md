@@ -77,6 +77,51 @@ Usage:
 
 ```
 
+### Compnent commands{#compnentCommands}
+
+d3system must be defined as module in console config
+```php
+    'modules' => [
+        'd3system' => [
+            'class' => 'd3system\Module'
+        ],
+    ]
+```
+
+Extens from D3CommandComponent
+```php
+use d3system\compnents\D3CommandComponent; 
+class DailyActivityNotification extends D3CommandComponent {
+
+    public $setting1;
+    public $setting2;
+    
+    public function init()
+    {
+        //init logic
+    }
+    
+    public function run(D3ComponentCommandController $controller) : bool
+    {
+        parent::run($controller);
+        //runing logic
+    }        
+}
+```
+
+Define as component  in console config
+```php 
+    'components' => [
+        'activityEmail' => [
+        'class' => 'd3yii2\d3activity\components\DailyActivityNotification',
+        'setting1' => 15,
+        'setting2' => 22,
+    ]    
+```
+Executing command component
+```shell
+yii d3system/d3-component-command activityEmail,component2,component3
+```
 ## Date & Time conversions
 
 Dependency
