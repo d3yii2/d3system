@@ -70,12 +70,13 @@ class ThBadge extends Widget
     {
         $options = array_merge($this->getDefaultOptions(), $options);
 
+        $htmlClass = $htmlOptions['class'] ?? null;
         $htmlOptions = array_merge(
+            $htmlOptions,
             [
-                'class' => 'badge badge-' . $options['type'],
+                'class' => 'badge badge-' . $options['type'] . ' ' . $htmlClass,
                 'title' => ! empty($options['title']) ? $options['title'] : $options['text'],
-            ],
-            $htmlOptions
+            ]
         );
 
         $label = '';
