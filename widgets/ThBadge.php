@@ -12,15 +12,15 @@ use yii\helpers\Html;
 class ThBadge extends Widget
 {
 
-    const TYPE_SUCCESS = 'success';
-    const TYPE_INFO = 'info';
-    const TYPE_WARNING = 'warning';
-    const TYPE_DANGER = 'danger';
-    const TYPE_DEFAULT = 'default';
-    const TYPE_PRIMARY = 'primary';
-    const TYPE_LILAC = 'lilac';
-    const TYPE_INVERSE = 'inverse';
-    const TYPE_TEALS = 'teals';
+    public const TYPE_SUCCESS = 'success';
+    public const TYPE_INFO = 'info';
+    public const TYPE_WARNING = 'warning';
+    public const TYPE_DANGER = 'danger';
+    public const TYPE_DEFAULT = 'default';
+    public const TYPE_PRIMARY = 'primary';
+    public const TYPE_LILAC = 'lilac';
+    public const TYPE_INVERSE = 'inverse';
+    public const TYPE_TEALS = 'teals';
 
     public $type;
     public $faIcon;
@@ -101,7 +101,7 @@ class ThBadge extends Widget
         $badgeContent = Html::tag('span', $label, $htmlOptions);
 
         if (!empty($options['url'])) {
-            $badgeContent = $link = Html::a($badgeContent, $options['url']);
+            $badgeContent = Html::a($badgeContent, $options['url']);
         }
 
         return$badgeContent;
