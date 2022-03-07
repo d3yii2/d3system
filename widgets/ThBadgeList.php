@@ -11,6 +11,7 @@ class ThBadgeList extends ThBadge
     public $items = [];
     public $separator = ' ';
     public $renderOptions = [];
+    public $htmlOptions = [];
 
     /**
      * @return string|void
@@ -32,8 +33,7 @@ class ThBadgeList extends ThBadge
             if (!empty($this->renderOptions['afterText'])) {
                 $item['afterText'] = $this->renderOptions['afterText'];
             }
-
-            $badges[] = $this->getBadge($item);
+            $badges[] = $this->getBadge($item, $this->htmlOptions);
         }
 
         return implode($this->separator, $badges);
