@@ -15,7 +15,6 @@
  * of the guide for details.
  *
  * NOTE: this file must be saved in UTF-8 encoding.
- * @deprecated - dublē lv/d3system
  */
 return [
     'Content error' => 'Satura kļūda',

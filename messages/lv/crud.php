@@ -1,7 +1,4 @@
 <?php
-/**
- * @deprecated - dublē lv/crud.php
-*/
 return [
     'Add' => 'Pievienot',
     'Are you sure to delete this item?' => 'Vai tiešām dzēšat šo ierakstu?',
