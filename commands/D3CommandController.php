@@ -17,7 +17,12 @@ class D3CommandController extends Controller
      * @var bool
      */
     public $debug = false;
-
+    
+    public $saveLog;
+    public $logContent;
+    
+    protected $startedTime;
+    
     public function beforeAction($action)
     {
         $this->out('');
@@ -34,19 +39,33 @@ class D3CommandController extends Controller
         $this->out('Action: ' . $action->actionMethod);
         $this->out('Class: ' . get_class($action->controller));
         $this->out('------------------');
-        $this->out('Started: ' . date('Ymd His'));
+        $this->startedTime = date('Y-m-d H:i:s');
+        $this->out('Started: ' . $this->startedTime);
         return parent::beforeAction($action);
     }
 
     public function afterAction($action, $result)
     {
-        $this->out('Finished: ' . date('Ymd His'));
+        $this->out('Started: ' . $this->startedTime);
+        $this->out('Finished: ' . date('Y-m-d H:i:s'));
         $this->out('==================');
         $this->out('');
         return parent::afterAction($action, $result);
+        
+        if ($this->saveLog) {
+            $this->writeLog();
+        }
 
     }
-
+    
+    /**
+     *
+     */
+    protected function writeLog():void
+    {
+        file_put_contents($this->saveLog, $this->logContent, FILE_APPEND | LOCK_EX);
+    }
+    
     /**
      * @return Connection
      */
@@ -63,6 +82,10 @@ class D3CommandController extends Controller
     public function out(string $string, int $settings = 0): void
     {
         $this->stdout($string . PHP_EOL, $settings);
+        
+        if ($this->saveLog) {
+            $this->logContent .= $string . PHP_EOL;
+        }
     }
 
     /**
