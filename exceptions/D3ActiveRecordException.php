@@ -22,14 +22,14 @@ class D3ActiveRecordException extends Exception
      * D3ModelException constructor.
      * @param ActiveRecord|Object $model
      * @param string|null $flashMessage message for displaying in flash
-     * @param string|false $loggingMessage logging message. If false, do not log
+     * @param bool|false $loggingMessage logging message. If false, do not log
      * @param array|bool $flashAttributes list attributes for displaying in flash. If false, do not show. If true, show all
      * @param string $errorCategory
      */
     public function __construct(
         $model,
         string $flashMessage = null,
-        string $loggingMessage = '',
+        bool $loggingMessage = true,
         $flashAttributes = false,
         string $errorCategory = ''
     ) {
