@@ -142,10 +142,10 @@ class D3FileHelper
     /**
      * @throws \yii\base\Exception
      */
-    public static function getDirectoryFiles(string $directory)
+    public static function getDirectoryFiles(string $directory, string $pattern = '*')
     {
         $directoryPath = self::getRuntimeDirectoryPath($directory);
-        return glob($directoryPath . '/*');
+        return glob($directoryPath . '/' . $pattern);
     }
 
 }
