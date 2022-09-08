@@ -37,30 +37,35 @@ class D3ActiveRecordException extends Exception
             $errorCategory = 'D3ActiveRecord';
         }
 
-        $modelErrors = 'Can\'t save ' . get_class($model) . PHP_EOL
-            . ' Logging Message: ' . $loggingMessage . PHP_EOL
-            . ' Flash Message: ' . $flashMessage . PHP_EOL
+        $modelErrors = 'Can\'t save ' . get_class($model);
+        if ($flashMessage) {
+            $modelErrors .=  PHP_EOL . ' Flash Message: ' . $flashMessage;
+        }
+
+        $modelErrors .= PHP_EOL
             . ' Errors: ' . VarDumper::export($model->getErrors()) . PHP_EOL
             . ' Attributes: ' . VarDumper::export($model->attributes);
-
-        $logErrors = [];
+        if ($flashMessage) {
+            $modelErrors .= PHP_EOL . 'flashMessage: ' . $flashMessage;
+        }
         if ($loggingMessage !== false) {
-            $logErrors[] = 'flashMessage: ' . $flashMessage;
-            $logErrors[] = 'modelErrors: ' . $modelErrors;
-            $logger = Yii::getLogger();
-            $logger->log($modelErrors, Logger::LEVEL_TRACE, $errorCategory);
+            Yii::error($modelErrors, $errorCategory);
+        }
+
+        if (Yii::$app instanceof Application) {
+            echo $modelErrors . PHP_EOL;
+        }
+
+        if ($flashMessage) {
+            FlashHelper::addWarning($flashMessage);
         }
         if ($flashAttributes) {
             foreach ($model->getErrors() as $attribute => $attributeErrors) {
                 if ($flashAttributes === true || in_array($attribute, $flashAttributes, true)) {
                     foreach ($attributeErrors as $error) {
-                        if (!$flashMessage) {
-                            $flashMessage = $error;
-                        }
                         if (!Yii::$app instanceof Application) {
                             FlashHelper::addWarning($error);
                         }
-                        $logErrors[] = $model->getAttributeLabel($attribute) . ': ' . $error;
                     }
                 }
             }
@@ -68,14 +73,6 @@ class D3ActiveRecordException extends Exception
 
         if (!$flashMessage) {
             $flashMessage = Yii::t('d3system', 'Database error');
-        }
-
-        if (Yii::$app instanceof ConsoleApplication) {
-            echo $modelErrors . PHP_EOL;
-        }
-
-        if ($logErrors) {
-            Yii::error(implode(PHP_EOL, $logErrors), $errorCategory);
         }
         parent::__construct($flashMessage);
     }
