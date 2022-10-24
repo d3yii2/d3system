@@ -342,9 +342,9 @@ class D3SystemView extends View
 
     /**
      * Detect the view is partial (URL contains fancybox param)
-     * @TODO - Fancybox is deprecated 
      * Use the eaBlankonThema\yii2\web\LayoutController:: LAYOUT_MINIMAL_PARAM instead
      * @return bool|null
+     * @deprecated  use D3SystemView::isLayoutMinimal()
      */
     public function isPartialView(): ?bool
     {
