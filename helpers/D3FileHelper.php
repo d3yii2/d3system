@@ -107,6 +107,20 @@ class D3FileHelper
     /**
      * @throws \yii\base\Exception
      */
+    public static function fileAppendRowContentInRuntime(string $directory, string $fileName, string $content): string
+    {
+        $filePath = self::getRuntimeFilePath($directory,$fileName);
+        if (file_exists($filePath)) {
+            file_put_contents($filePath, PHP_EOL . $content, FILE_APPEND);
+        } else {
+            file_put_contents($filePath, $content);
+        }
+        return $filePath;
+    }
+
+    /**
+     * @throws \yii\base\Exception
+     */
     public static function fileUnlinkInRuntime(string $directory, string $fileName): string
     {
         $filePath = self::getRuntimeFilePath($directory, $fileName);
