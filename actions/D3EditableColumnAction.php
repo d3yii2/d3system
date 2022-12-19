@@ -1,10 +1,8 @@
 <?php
 
-
 namespace d3system\actions;
 
-
-use d3system\exceptions\D3UserAlertException;
+use Exception;
 use kartik\grid\EditableColumnAction;
 use Yii;
 use yii\web\HttpException;
@@ -40,41 +38,38 @@ class D3EditableColumnAction extends EditableColumnAction
      */
     public $methodName = 'findModel';
 
-    public function run()
-    {
-        $requestPost = Yii::$app->request->post();
-        // Check if there is an Editable ajax request
-        if (!isset($requestPost['hasEditable'])) {
-            return $this->cannotUpdate();
-        }
-        $id = $requestPost['editableKey'];
-        $model = $this->findD3Model($id);
-        $forbiddenFields = array_merge(
-            $model::primaryKey(),
-            $this->editAbleFieldForbiddenDefault,
-            $this->editAbleFieldsForbidden
-        );
-        $editableAttribute = $requestPost['editableAttribute'];
 
-
-        if($this->editAbleFields && !in_array($editableAttribute,$this->editAbleFields,true)){
-            return $this->cannotUpdate();
-        }
-        if(in_array($editableAttribute,$forbiddenFields,true)){
-            return $this->cannotUpdate();
-        }
-        if (!$model->isAttributeSafe($editableAttribute)) {
-            return $this->cannotUpdate();
-        }
-
-        return parent::run();
-    }
 
     public function validateEditable()
     {
         try {
+            $requestPost = Yii::$app->request->post();
+            // Check if there is an Editable ajax request
+            if (!isset($requestPost['hasEditable'])) {
+                return $this->cannotUpdate();
+            }
+            $id = $requestPost['editableKey'];
+            $model = $this->findD3Model($id);
+            $forbiddenFields = array_merge(
+                $model::primaryKey(),
+                $this->editAbleFieldForbiddenDefault,
+                $this->editAbleFieldsForbidden
+            );
+            $editableAttribute = $requestPost['editableAttribute'];
+
+
+            if($this->editAbleFields && !in_array($editableAttribute,$this->editAbleFields,true)){
+                return $this->cannotUpdate();
+            }
+            if(in_array($editableAttribute,$forbiddenFields,true)){
+                return $this->cannotUpdate();
+            }
+            if (!$model->isAttributeSafe($editableAttribute)) {
+                return $this->cannotUpdate();
+            }
+
             return parent::validateEditable();
-        } catch (D3UserAlertException $e) {
+        } catch (Exception $e) {
             return ['output' => '', 'message' => $e->getMessage()];
         }
     }
