@@ -139,6 +139,12 @@ class D3EditableAction extends Action
 
 
         foreach ($model->errors as $field => $messages) {
+            if (isset($requestPost[$field])) {
+                return [
+                    'output'  => '',
+                    'message' => implode('; ', $messages)
+                ];
+            }
             foreach ($messages as $message) {
                 $errors[] = $model->getAttributeLabel($field)
                     . ': '
