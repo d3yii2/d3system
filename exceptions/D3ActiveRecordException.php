@@ -2,14 +2,12 @@
 
 namespace d3system\exceptions;
 
-use ConsoleApplication;
 use eaBlankonThema\components\FlashHelper;
 use Yii;
 use yii\base\Exception;
 use yii\console\Application;
 use yii\db\ActiveRecord;
 use yii\helpers\VarDumper;
-use yii\log\Logger;
 
 /**
  * Exception for logging and displaying in flash active record errors
@@ -52,20 +50,24 @@ class D3ActiveRecordException extends Exception
             Yii::error($modelErrors, $errorCategory);
         }
 
-        if (Yii::$app instanceof Application) {
+        $isConsole = Yii::$app instanceof Application;
+        if ($isConsole) {
             echo $modelErrors . PHP_EOL;
         }
 
         if ($flashMessage) {
             FlashHelper::addWarning($flashMessage);
         }
-        if ($flashAttributes) {
+        if ($flashAttributes && !$isConsole) {
             foreach ($model->getErrors() as $attribute => $attributeErrors) {
                 if ($flashAttributes === true || in_array($attribute, $flashAttributes, true)) {
+                    $attributeLabel = $model->getAttributeLabel($attribute);
                     foreach ($attributeErrors as $error) {
-                        if (!Yii::$app instanceof Application) {
-                            FlashHelper::addWarning($error);
+                        $attributeMessage = $attributeLabel . ':' . $error;
+                        if (!$flashMessage) {
+                            $flashMessage = $attributeMessage;
                         }
+                        FlashHelper::addWarning($attributeMessage);
                     }
                 }
             }
