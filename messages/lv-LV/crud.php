@@ -20,4 +20,5 @@ return [
     'Read' => 'Skatīt',
     'Select' => 'Izvēlēties',
     'Total' => 'Kopā',
+    'Cancel' => 'Atcelt'
 ];
