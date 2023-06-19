@@ -32,7 +32,7 @@ class D3ActiveRecordException extends Exception
         string $errorCategory = ''
     ) {
         if (!$errorCategory) {
-            $errorCategory = 'D3ActiveRecord';
+            $errorCategory = 'application';
         }
 
         $modelErrors = 'Can\'t save ' . get_class($model);
