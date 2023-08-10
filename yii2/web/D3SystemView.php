@@ -122,14 +122,14 @@ class D3SystemView extends View
                     . ': '
                     . $this->exportButtonList[0]['label'],
                 'icon' => Yii::$app->widget->button::ICON_DOWNLOAD,
-                'type' => Yii::$app->widget->button::TYPE_SUCCESS,
+                'type' => Yii::$app->widget->button::TYPE_PRIMARY,
                 'link' => $this->exportButtonList[0]['url']
             ]);
         }elseif(count($this->exportButtonList) > 1){
             $this->finalPageButtonsRight[] = $this->buttonDropdownClass::widget([
                 'label' => Yii::t('d3system','Export'),
                 'icon' => Yii::$app->widget->button::ICON_DOWNLOAD,
-                'type' => Yii::$app->widget->button::TYPE_SUCCESS,
+                'type' => Yii::$app->widget->button::TYPE_PRIMARY,
                 'items' => $this->exportButtonList
             ]);
         }
