@@ -4,7 +4,7 @@ namespace d3system\yii2\web;
 
 
 use cornernote\returnurl\ReturnUrl;
-use eaBlankonThema\yii2\web\LayoutController;
+use d3system\yii2\LayoutController;
 use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThButtonDropDown;
 use Exception;

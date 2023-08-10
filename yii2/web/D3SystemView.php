@@ -4,9 +4,7 @@ namespace d3system\yii2\web;
 
 
 use cornernote\returnurl\ReturnUrl;
-use eaBlankonThema\yii2\web\LayoutController;
-use eaBlankonThema\widget\ThButton;
-use eaBlankonThema\widget\ThButtonDropDown;
+use d3system\yii2\LayoutController;
 use Exception;
 use Yii;
 use yii\web\AssetBundle;
@@ -119,29 +117,29 @@ class D3SystemView extends View
             $this->finalPageButtonsRight[] = $this->params['pageButtonsRight'];
         }
         if(count($this->exportButtonList) === 1){
-            $this->finalPageButtonsRight[] = ThButton::widget([
+            $this->finalPageButtonsRight[] = $this->buttonClass::widget([
                 'label' => Yii::t('d3system','Export')
                     . ': '
                     . $this->exportButtonList[0]['label'],
-                'icon' => ThButton::ICON_DOWNLOAD,
-                'type' => ThButton::TYPE_SUCCESS,
+                'icon' => $this->buttonClass::ICON_DOWNLOAD,
+                'type' => $this->buttonClass::TYPE_SUCCESS,
                 'link' => $this->exportButtonList[0]['url']
             ]);
         }elseif(count($this->exportButtonList) > 1){
-            $this->finalPageButtonsRight[] = ThButtonDropDown::widget([
+            $this->finalPageButtonsRight[] = $this->buttonDropdownClass::widget([
                 'label' => Yii::t('d3system','Export'),
-                'icon' => ThButton::ICON_DOWNLOAD,
-                'type' => ThButton::TYPE_SUCCESS,
+                'icon' => $this->buttonClass::ICON_DOWNLOAD,
+                'type' => $this->buttonClass::TYPE_SUCCESS,
                 'items' => $this->exportButtonList
             ]);
         }
 
         if($this->settingButtonUrl){
-            $this->finalPageButtonsRight[] = ThButton::widget([
-                'type' => ThButton::TYPE_DEFAULT,
+            $this->finalPageButtonsRight[] = $this->buttonClass::widget([
+                'type' => $this->buttonClass::TYPE_DEFAULT,
                 'tooltip' => $this->settingButtonTooltip,
                 'link' => $this->settingButtonUrl,
-                'icon' => ThButton::ICON_COG,
+                'icon' => $this->buttonClass::ICON_COG,
             ]);
         }
 
@@ -376,5 +374,23 @@ class D3SystemView extends View
         return $assetClass::register($this);
 
     }
-
+    
+    /**
+     * @param   string  $key
+     *
+     * @return mixed|null
+     */
+    public function getSetting(string $key)
+    {
+        return $this->settings[$key] ?? null;
+    }
+    
+    /**
+     * @param   string  $key
+     * @param   string  $value
+     */
+    public function setSetting(string $key, string $value): void
+    {
+        $this->settings[$key] = $value;
+    }
 }
