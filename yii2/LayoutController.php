@@ -135,6 +135,6 @@ class LayoutController extends Controller
         return $this->layoutMinimal = 
             //@FIXME - jāparbauda vai sistēmā kaut kur nav palikusi fancybox atkarība (sen vairs neizmantojas)
             //(Yii::$app->getRequest()->get('fancybox') ||
-            Yii::$app->getRequest()->get(self::LAYOUT_MINIMAL_PARAM);
+            Yii::$app->getRequest()->get(self::LAYOUT_MINIMAL_PARAM) ? true : false;
     }
 }
