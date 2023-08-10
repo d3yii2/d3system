@@ -2,8 +2,7 @@
 
 namespace d3system\yii2;
 
-//use eaBlankonThema\widget\ThFancyBoxLink;
-//@FIXME - laikam jāiznes widžeti ārpus tēmas
+use d3system\yii2\web\D3SystemWidget;
 use eaArgonTheme\widget\ThFancyBoxLink;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -16,6 +15,8 @@ use Yii;
  */
 class LayoutController extends Controller
 {
+    protected $widget;
+
     /** @var bool */
     private $layoutMinimal;
 
@@ -38,6 +39,11 @@ class LayoutController extends Controller
     /** @var string controller actions left menu  code or class*/
     public $actionLeftMenu = [];
 
+    public function init()
+    {
+        $this->widget = Yii::$app->widget;
+    }
+    
     /**
      * @param \yii\base\Action $action
      * @return bool
