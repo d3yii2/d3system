@@ -117,29 +117,29 @@ class D3SystemView extends View
             $this->finalPageButtonsRight[] = $this->params['pageButtonsRight'];
         }
         if(count($this->exportButtonList) === 1){
-            $this->finalPageButtonsRight[] = $this->buttonClass::widget([
+            $this->finalPageButtonsRight[] = Yii::$app->widget->button::widget([
                 'label' => Yii::t('d3system','Export')
                     . ': '
                     . $this->exportButtonList[0]['label'],
-                'icon' => $this->buttonClass::ICON_DOWNLOAD,
-                'type' => $this->buttonClass::TYPE_SUCCESS,
+                'icon' => Yii::$app->widget->button::ICON_DOWNLOAD,
+                'type' => Yii::$app->widget->button::TYPE_SUCCESS,
                 'link' => $this->exportButtonList[0]['url']
             ]);
         }elseif(count($this->exportButtonList) > 1){
             $this->finalPageButtonsRight[] = $this->buttonDropdownClass::widget([
                 'label' => Yii::t('d3system','Export'),
-                'icon' => $this->buttonClass::ICON_DOWNLOAD,
-                'type' => $this->buttonClass::TYPE_SUCCESS,
+                'icon' => Yii::$app->widget->button::ICON_DOWNLOAD,
+                'type' => Yii::$app->widget->button::TYPE_SUCCESS,
                 'items' => $this->exportButtonList
             ]);
         }
 
         if($this->settingButtonUrl){
-            $this->finalPageButtonsRight[] = $this->buttonClass::widget([
-                'type' => $this->buttonClass::TYPE_DEFAULT,
+            $this->finalPageButtonsRight[] = Yii::$app->widget->button::widget([
+                'type' => Yii::$app->widget->button::TYPE_DEFAULT,
                 'tooltip' => $this->settingButtonTooltip,
                 'link' => $this->settingButtonUrl,
-                'icon' => $this->buttonClass::ICON_COG,
+                'icon' => Yii::$app->widget->button::ICON_COG,
             ]);
         }
 
