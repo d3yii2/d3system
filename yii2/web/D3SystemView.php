@@ -67,6 +67,7 @@ class D3SystemView extends View
     private $exportButtonList = [];
     
     private $showHeader = true;
+    public array $backButtons = [];
 
     public function init()
     {
@@ -100,6 +101,14 @@ class D3SystemView extends View
     public function addPageButtons(string $pageButton): void
     {
         $this->pageButtons[] = $pageButton;
+    }
+
+    public function addBackButtons($url, string $label = null): void
+    {
+        $this->backButtons[] = [
+            'url' => $url,
+            'label' => $label,
+        ];
     }
 
     /**
