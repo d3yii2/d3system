@@ -43,6 +43,9 @@ class D3SystemView extends View
     private $pageHeaderDescription = '';
     private $pageIcon = '';
 
+    private $pageNavigationConfig = [];
+    private $pageNavigationWidget = null;
+
     private $pageButtons = [];
 
     private $pageButtonsRight = [];
@@ -287,6 +290,32 @@ class D3SystemView extends View
     public function setPageHeader($pageHeader): void
     {
         $this->pageHeader = $pageHeader;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPageNavigationConfig(): array
+    {
+        return $this->pageNavigationConfig;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageNavigationWidget(): string
+    {
+        return $this->pageNavigationWidget;
+    }
+
+    /**
+     * @param array $config
+     * @param string|null $widget
+     */
+    public function setPageNavigation(array $config, ?string $widget = null): void
+    {
+        $this->pageNavigationConfig = $config;
+        $this->pageNavigationWidget = $widget;
     }
 
      /**
