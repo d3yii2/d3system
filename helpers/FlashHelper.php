@@ -80,13 +80,25 @@ class FlashHelper
 
     public static function addFlash($type, $message, $options = null): void
     {
+        /** search free flash key for type $k */
         $k = 0;
-        $session = Yii::$app->session;
-        while ($session->hasFlash(self::createKey($type, $k))) {
+        while (self::hasFlash(self::createKey($type, $k))) {
             $k++;
         }
         $options['body'] = $message;
-        $session->addFlash(self::createKey($type, $k), $options);
+        Yii::$app->session->addFlash(self::createKey($type, $k), $options);
+    }
+
+    /**
+     * check if exist flash with key
+     * @param string $key
+     * @return bool
+     */
+    private static function hasFlash(string $key): bool
+    {
+        $session = Yii::$app->session;
+        $counters = $session->get($session->flashParam);
+        return isset($counters[$key]);
     }
 
     public static function createKey($type, $k): string
