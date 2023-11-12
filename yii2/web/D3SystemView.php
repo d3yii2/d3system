@@ -39,6 +39,7 @@ class D3SystemView extends View
     private $leftMenuCode;
 
     private $pageHeader = '';
+    private $pageHeaderButtons = [];
     private $pageFooter = '';
     private $pageHeaderDescription = '';
     private $pageIcon = '';
@@ -89,6 +90,17 @@ class D3SystemView extends View
         return $this->pageButtons;
     }
 
+    /**
+     * @return array
+     */
+    public function getPageHeaderButtons(): array
+    {
+        if(isset($this->params['pageHeaderButtons'])){
+            return array_merge([$this->params['pageHeaderButtons']], $this->pageHeaderButtons);
+        }
+        return $this->pageHeaderButtons;
+    }
+
     public function addBreadCrumb(array $url, string $label): void
     {
         $this->breadCrumb[$label] = $url;
@@ -98,12 +110,21 @@ class D3SystemView extends View
     {
         return $this->breadCrumb;
     }
+
     /**
      * @param string $pageButton
      */
     public function addPageButtons(string $pageButton): void
     {
         $this->pageButtons[] = $pageButton;
+    }
+
+    /**
+     * @param string $pageButton
+     */
+    public function addPageHeaderButtons(string $pageButton): void
+    {
+        $this->pageHeaderButtons[] = $pageButton;
     }
 
     public function addBackButtons($url, string $label = null): void
