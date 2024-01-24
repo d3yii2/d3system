@@ -2,7 +2,7 @@
 
 namespace d3system\exceptions;
 
-use eaBlankonThema\components\FlashHelper;
+use d3system\helpers\FlashHelper;
 use Yii;
 use yii\base\Exception;
 use yii\console\Application;
