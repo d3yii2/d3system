@@ -44,6 +44,9 @@ class D3SystemView extends View
     private $pageHeaderDescription = '';
     private $pageIcon = '';
 
+    /** @var string|null  Use for title, where included html */
+    public ?string $pageTitleEncoded = null;
+
     private $pageNavigationConfig = [];
     private $pageNavigationWidget = null;
 
