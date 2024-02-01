@@ -8,6 +8,7 @@ use Closure;
 use d3system\exceptions\D3UserAlertException;
 use Yii;
 use yii\base\Action;
+use yii\base\UserException;
 use yii\db\ActiveRecord;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -31,47 +32,47 @@ class D3EditableAction extends Action
     /**
      * @var array
      */
-    public $editAbleFieldForbiddenDefault = [];
+    public array $editAbleFieldForbiddenDefault = [];
 
     /**
      * @var array
      */
-    public $editAbleFields = [];
+    public array $editAbleFields = [];
 
     /**
      * Forbidden has higher priority then editAbleFields
      *
      * @var array
      */
-    public $editAbleFieldsForbidden = [];
+    public array $editAbleFieldsForbidden = [];
 
     /**
-     * @var string
+     * @var null|string|ActiveRecord
      */
-    public $modelName;
+    public ?string $modelName = null;
 
     /**
-     * @var string
+     * @var null|string
      */
-    public $methodName = 'findModel';
+    public ?string $methodName = 'findModel';
 
     /**
-     * @var Closure a function to be called previous saving model. The anonymous function is preferable to have the
+     * @var null|Closure a function to be called previous saving model. The anonymous function is preferable to have the
      * model passed by reference. This is useful when we need to set model with extra data previous update
      */
-    public $preProcess;
+    public ?Closure $preProcess = null;
 
     /**
-     * @var Closure
+     * @var null|Closure
      */
-    public $outPreProcess;
+    public ?Closure $outPreProcess = null;
 
     /**
      * @param int $id
-     * @return array|bool
+     * @return array
      * @throws HttpException
      */
-    public function run(int $id)
+    public function run(int $id): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $request                    = Yii::$app->request;
@@ -133,6 +134,8 @@ class D3EditableAction extends Action
                     'message' => ''
                 ];
             }
+        } catch (UserException $e) {
+            $errors[] = $e->getMessage();
         } catch (D3UserAlertException $e) {
             $errors[] = $e->getMessage();
         }
@@ -164,7 +167,7 @@ class D3EditableAction extends Action
      * @return object the loaded model
      * @throws HttpException if the model cannot be found
      */
-    protected function findModel(int $id)
+    protected function findModel(int $id): object
     {
 
         if (method_exists($this->controller, $this->methodName)) {
