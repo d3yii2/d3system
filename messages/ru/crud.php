@@ -2,6 +2,7 @@
 return [
     'Add' => 'Добавить',
     'Are you sure to delete this item?' => 'Вы уверены, что хотите удалить этот пункт?',
+    'Are You sure to delete?' => 'Вы уверены, что хотите удалить?',
     'New' => 'новый',
     'Create' => 'Добавить',
     'Copy' => 'Копировать',
@@ -19,8 +20,10 @@ return [
     'Update' => 'Сохранить',
     'Cancel' => 'Отменить',
     'Yes' => 'Да',
+    'Yes, delete it' => 'Да удалить',
     'No' => 'Нет',
     'Close' => 'Закрыть',
     'Apply' => 'Применить',
-    'Invalid number format' => 'Неверный формат номера'
+    'Invalid number format' => 'Неверный формат номера',
+    'Records will be deleted!' => 'Записи будут удалены!',
 ];
