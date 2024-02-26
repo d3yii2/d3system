@@ -26,4 +26,5 @@ return [
     'Apply' => 'Применить',
     'Invalid number format' => 'Неверный формат номера',
     'Records will be deleted!' => 'Записи будут удалены!',
+    'Record deleted successfully!' => 'Запис удален!',
 ];
