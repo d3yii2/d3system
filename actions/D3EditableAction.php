@@ -23,37 +23,18 @@ class D3EditableAction extends Action
      */
     public $controller;
 
-    /**
-     * @var int $id
-     */
-    public $id;
+    public array $editAbleFieldForbiddenDefault = [];
 
-    /**
-     * @var array
-     */
-    public $editAbleFieldForbiddenDefault = [];
-
-    /**
-     * @var array
-     */
-    public $editAbleFields = [];
+    public array $editAbleFields = [];
 
     /**
      * Forbidden has higher priority then editAbleFields
-     *
-     * @var array
      */
-    public $editAbleFieldsForbidden = [];
+    public array $editAbleFieldsForbidden = [];
 
-    /**
-     * @var string
-     */
-    public $modelName;
+    public ?string $modelName = null;
 
-    /**
-     * @var string
-     */
-    public $methodName = 'findModel';
+    public string $methodName = 'findModel';
 
     /**
      * @var Closure a function to be called previous saving model. The anonymous function is preferable to have the
@@ -68,10 +49,10 @@ class D3EditableAction extends Action
 
     /**
      * @param int $id
-     * @return array|bool
+     * @return array
      * @throws HttpException
      */
-    public function run(int $id)
+    public function run(int $id): array
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $request                    = Yii::$app->request;
@@ -94,6 +75,11 @@ class D3EditableAction extends Action
             $this->editAbleFieldForbiddenDefault,
             $this->editAbleFieldsForbidden
         );
+
+        $value = reset($requestPost);
+        if (is_array($value)) {
+            $requestPost = $value;
+        }
         foreach ($requestPost as $name => $value) {
 
             if($this->editAbleFields && !in_array($name,$this->editAbleFields,true)){
