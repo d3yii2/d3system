@@ -76,6 +76,8 @@ class D3SystemView extends View
     private $showHeader = true;
     public array $backButtons = [];
 
+    public ?string $buttonDropdownClass = null;
+
     public function init()
     {
         $this->setLeftMenu($this->defaultLeftMenu);
