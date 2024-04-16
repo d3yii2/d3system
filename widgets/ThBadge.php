@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * Class ThBadge
  * @package d3system\widgets
  */
-class ThBadge extends Widget
+class ThBadge extends D3Widget
 {
 
     public const TYPE_SUCCESS = 'success';
