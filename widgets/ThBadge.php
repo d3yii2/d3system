@@ -2,7 +2,7 @@
 
 namespace d3system\widgets;
 
-use yii\bootstrap\Widget;
+use yii\base\Widget;
 use yii\helpers\Html;
 
 /**
