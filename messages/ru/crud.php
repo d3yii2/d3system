@@ -1,8 +1,10 @@
 <?php
 return [
+    'Action' => 'Действие',
     'Add' => 'Добавить',
     'Are you sure to delete this item?' => 'Вы уверены, что хотите удалить этот пункт?',
     'Are You sure to delete?' => 'Вы уверены, что хотите удалить?',
+    'Are you sure delete this record?' => 'Вы уверены, что хотите удалить этот запись?',
     'New' => 'новый',
     'Create' => 'Добавить',
     'Copy' => 'Копировать',
