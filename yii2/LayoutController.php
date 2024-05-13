@@ -3,8 +3,6 @@
 namespace d3system\yii2;
 
 use d3system\yii2\web\D3SystemView;
-use d3system\yii2\web\D3SystemWidget;
-use eaArgonTheme\widget\ThFancyBoxLink;
 use yii\base\Action;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
