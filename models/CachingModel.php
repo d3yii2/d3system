@@ -91,7 +91,7 @@ class CachingModel extends Model
      * @throws Exception
      * @throws \Exception
      */
-    public function getCache(): ?self
+    public function getCache()
     {
         if ($this->prev) {
             return $this->prev;
