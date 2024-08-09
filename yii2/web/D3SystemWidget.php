@@ -2,8 +2,6 @@
 
 namespace d3system\yii2\web;
 
-
-use eaBlankonThema\widget\ThRmGridView;
 use yii\base\Component;
 
 /**
@@ -11,9 +9,9 @@ use yii\base\Component;
  */
 class D3SystemWidget extends Component
 {
-    public $button = 'eaBlankonThema\widget\ThButton';
-    public $buttonDropdown = 'eaBlankonThema\widget\ThButtonDropDown';
-    public $alert = 'eaBlankonThema\widget\ThButtonDropDown';
-    public $gridView = 'eaBlankonThema\widget\ThGridView';
-    public $rmGridView = 'eaBlankonThema\widget\ThRmGridView';
+    public string $button = 'eaBlankonThema\widget\ThButton';
+    public string $buttonDropdown = 'eaBlankonThema\widget\ThButtonDropDown';
+    public string $alert = 'eaBlankonThema\widget\ThButtonDropDown';
+    public string $gridView = 'eaBlankonThema\widget\ThGridView';
+    public string $rmGridView = 'eaBlankonThema\widget\ThRmGridView';
 }

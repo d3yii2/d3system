@@ -17,5 +17,6 @@ return [
     'Read' => 'Skatīt',
     'Select' => 'Izvēlēties',
     'Total' => 'Kopā',
+    'Cannot update this field.' => 'Nevar labot šo lauku.',
 
 ];

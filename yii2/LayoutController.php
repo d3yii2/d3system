@@ -2,16 +2,17 @@
 
 namespace d3system\yii2;
 
-use d3system\yii2\web\D3SystemWidget;
-use eaArgonTheme\widget\ThFancyBoxLink;
+use d3system\yii2\web\D3SystemView;
+use yii\base\Action;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use Yii;
 
 /**
  * Class LayoutController
  * @package ea\app\controllers
- * @property \d3system\yii2\web\D3SystemView $view
+ * @property D3SystemView $view
  */
 class LayoutController extends Controller
 {
@@ -45,9 +46,9 @@ class LayoutController extends Controller
     }
     
     /**
-     * @param \yii\base\Action $action
+     * @param Action $action
      * @return bool
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function beforeAction($action)
     {
