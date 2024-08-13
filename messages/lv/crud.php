@@ -18,5 +18,6 @@ return [
     'Select' => 'Izvēlēties',
     'Total' => 'Kopā',
     'Cannot update this field.' => 'Nevar labot šo lauku.',
+    'Cancel' => 'Atcelt',
 
 ];
