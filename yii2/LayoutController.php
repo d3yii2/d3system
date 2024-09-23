@@ -42,7 +42,9 @@ class LayoutController extends Controller
 
     public function init()
     {
-        $this->widget = Yii::$app->widget;
+        if (isset(Yii::$app->widget)) {
+            $this->widget = Yii::$app->widget;
+        }
     }
     
     /**
