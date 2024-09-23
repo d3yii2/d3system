@@ -162,4 +162,12 @@ class D3FileHelper
         return glob($directoryPath . '/' . $pattern);
     }
 
+    /**
+     * @param string|null $path
+     * @return string
+     */
+    public static function getBasename(string $path = null): string
+    {
+        return basename($path);
+    }
 }

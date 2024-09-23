@@ -2,9 +2,13 @@
 
 namespace d3system\commands;
 
+use d3logger\D3Monolog;
 use Yii;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\db\Connection;
+use yii\helpers\Inflector;
 
 /**
  *
@@ -12,6 +16,7 @@ use yii\db\Connection;
  */
 class D3CommandController extends Controller
 {
+    public ?D3Monolog $log = null;
 
     /**
      * @var bool
@@ -50,12 +55,10 @@ class D3CommandController extends Controller
         $this->out('Finished: ' . date('Y-m-d H:i:s'));
         $this->out('==================');
         $this->out('');
-        return parent::afterAction($action, $result);
-        
         if ($this->saveLog) {
             $this->writeLog();
         }
-
+        return parent::afterAction($action, $result);
     }
     
     /**
@@ -105,6 +108,26 @@ class D3CommandController extends Controller
         if($this->debug){
             $this->out('DEBUG: ' . $string, $settings);
         }
+    }
+
+    /**
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function createLogger(string $action)
+    {
+        $className= substr(get_called_class(), strrpos(get_called_class(), '\\') + 1);
+        $name = preg_replace('#Controller$#','', $className)
+            . ucfirst($action);
+        $fileName = Inflector::camel2id($name);
+        parent::init();
+        /** @var D3Monolog $this->log */
+        $this->log = Yii::createObject([
+            'class' => D3Monolog::class,
+            'name' => $name,
+            'fileName' => $fileName,
+            'directory' => 'commands',
+        ]);
     }
 }
 
