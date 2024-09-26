@@ -4,9 +4,7 @@ namespace d3system\yii2\web;
 
 
 use cornernote\returnurl\ReturnUrl;
-use eaBlankonThema\yii2\web\LayoutController;
-use eaBlankonThema\widget\ThButton;
-use eaBlankonThema\widget\ThButtonDropDown;
+use d3system\yii2\LayoutController;
 use Exception;
 use Yii;
 use yii\web\AssetBundle;
@@ -41,9 +39,16 @@ class D3SystemView extends View
     private $leftMenuCode;
 
     private $pageHeader = '';
+    private $pageHeaderButtons = [];
     private $pageFooter = '';
     private $pageHeaderDescription = '';
     private $pageIcon = '';
+
+    /** @var string|null  Use for title, where included html */
+    public ?string $pageTitleEncoded = null;
+
+    private $pageNavigationConfig = [];
+    private $pageNavigationWidget = null;
 
     private $pageButtons = [];
 
@@ -69,6 +74,9 @@ class D3SystemView extends View
     private $exportButtonList = [];
     
     private $showHeader = true;
+    public array $backButtons = [];
+
+    public ?string $buttonDropdownClass = null;
 
     public function init()
     {
@@ -87,6 +95,17 @@ class D3SystemView extends View
         return $this->pageButtons;
     }
 
+    /**
+     * @return array
+     */
+    public function getPageHeaderButtons(): array
+    {
+        if(isset($this->params['pageHeaderButtons'])){
+            return array_merge([$this->params['pageHeaderButtons']], $this->pageHeaderButtons);
+        }
+        return $this->pageHeaderButtons;
+    }
+
     public function addBreadCrumb(array $url, string $label): void
     {
         $this->breadCrumb[$label] = $url;
@@ -96,12 +115,29 @@ class D3SystemView extends View
     {
         return $this->breadCrumb;
     }
+
     /**
      * @param string $pageButton
      */
     public function addPageButtons(string $pageButton): void
     {
         $this->pageButtons[] = $pageButton;
+    }
+
+    /**
+     * @param string $pageButton
+     */
+    public function addPageHeaderButtons(string $pageButton): void
+    {
+        $this->pageHeaderButtons[] = $pageButton;
+    }
+
+    public function addBackButtons($url, string $label = null): void
+    {
+        $this->backButtons[] = [
+            'url' => $url,
+            'label' => $label,
+        ];
     }
 
     /**
@@ -119,29 +155,29 @@ class D3SystemView extends View
             $this->finalPageButtonsRight[] = $this->params['pageButtonsRight'];
         }
         if(count($this->exportButtonList) === 1){
-            $this->finalPageButtonsRight[] = ThButton::widget([
+            $this->finalPageButtonsRight[] = Yii::$app->widget->button::widget([
                 'label' => Yii::t('d3system','Export')
                     . ': '
                     . $this->exportButtonList[0]['label'],
-                'icon' => ThButton::ICON_DOWNLOAD,
-                'type' => ThButton::TYPE_SUCCESS,
+                'icon' => Yii::$app->widget->button::ICON_DOWNLOAD,
+                'type' => Yii::$app->widget->button::TYPE_PRIMARY,
                 'link' => $this->exportButtonList[0]['url']
             ]);
         }elseif(count($this->exportButtonList) > 1){
-            $this->finalPageButtonsRight[] = ThButtonDropDown::widget([
+            $this->finalPageButtonsRight[] = $this->buttonDropdownClass::widget([
                 'label' => Yii::t('d3system','Export'),
-                'icon' => ThButton::ICON_DOWNLOAD,
-                'type' => ThButton::TYPE_SUCCESS,
+                'icon' => Yii::$app->widget->button::ICON_DOWNLOAD,
+                'type' => Yii::$app->widget->button::TYPE_PRIMARY,
                 'items' => $this->exportButtonList
             ]);
         }
 
         if($this->settingButtonUrl){
-            $this->finalPageButtonsRight[] = ThButton::widget([
-                'type' => ThButton::TYPE_DEFAULT,
+            $this->finalPageButtonsRight[] = Yii::$app->widget->button::widget([
+                'type' => Yii::$app->widget->button::TYPE_DEFAULT,
                 'tooltip' => $this->settingButtonTooltip,
                 'link' => $this->settingButtonUrl,
-                'icon' => ThButton::ICON_COG,
+                'icon' => Yii::$app->widget->button::ICON_COG,
             ]);
         }
 
@@ -282,6 +318,32 @@ class D3SystemView extends View
         $this->pageHeader = $pageHeader;
     }
 
+    /**
+     * @return array
+     */
+    public function getPageNavigationConfig(): array
+    {
+        return $this->pageNavigationConfig;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageNavigationWidget(): string
+    {
+        return $this->pageNavigationWidget;
+    }
+
+    /**
+     * @param array $config
+     * @param string|null $widget
+     */
+    public function setPageNavigation(array $config, ?string $widget = null): void
+    {
+        $this->pageNavigationConfig = $config;
+        $this->pageNavigationWidget = $widget;
+    }
+
      /**
      * @return mixed
      */
@@ -376,5 +438,23 @@ class D3SystemView extends View
         return $assetClass::register($this);
 
     }
-
+    
+    /**
+     * @param   string  $key
+     *
+     * @return mixed|null
+     */
+    public function getSetting(string $key)
+    {
+        return $this->settings[$key] ?? null;
+    }
+    
+    /**
+     * @param   string  $key
+     * @param   string  $value
+     */
+    public function setSetting(string $key, string $value): void
+    {
+        $this->settings[$key] = $value;
+    }
 }

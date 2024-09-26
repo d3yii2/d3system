@@ -11,7 +11,6 @@ use Yii;
 
 /**
  * Class LayoutController
- * @package ea\app\controllers
  * @property D3SystemView $view
  */
 class LayoutController extends Controller
