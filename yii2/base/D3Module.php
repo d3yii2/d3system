@@ -28,6 +28,14 @@ class D3Module extends Module
      */
     public $leftMenu;
 
+    public string $theme = self::THEME_BLANKON;
+
+    //Default 
+    public const THEME_BLANKON = 'blankon';
+
+    public const THEME_ARGON = 'argon';
+
+
     public function __construct($id, $parent = null, $config = [])
     {
 
@@ -51,4 +59,12 @@ class D3Module extends Module
 
     }
 
+    public function init()
+    {
+        parent::init();
+
+        if ($this->theme !== self::THEME_BLANKON) {
+            $this->viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views-' . $this->theme;
+        }        
+    }
 }
