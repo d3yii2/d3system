@@ -17,7 +17,7 @@ class D3ActiveQuery extends ActiveQuery
      * @param string|null $dateRange
      * @return ActiveQuery
      */
-    public function andFilterWhereDateRange(string $fieldName, $dateRange): ActiveQuery
+    public function andFilterWhereDateRange(string $fieldName, ?string $dateRange): ActiveQuery
     {
         if (!$dateRange) {
             return $this;
@@ -38,7 +38,7 @@ class D3ActiveQuery extends ActiveQuery
      * @param string|null $dateRange
      * @return ActiveQuery
      */
-    public function andFilterWhereDateStrictRange(string $fieldName, $dateRange): ActiveQuery
+    public function andFilterWhereDateStrictRange(string $fieldName, ?string $dateRange): ActiveQuery
     {
         if (!$dateRange) {
             return $this;
@@ -60,11 +60,11 @@ class D3ActiveQuery extends ActiveQuery
      */
     public static function addFilterDateRangeToHaving($filterRange, $fieldName, ActiveQuery $query): bool
     {
-        if(empty($filterRange)){
+        if (empty($filterRange)) {
             return false;
         }
 
-        if(!strpos($filterRange, '-')){
+        if (!strpos($filterRange, '-')) {
             return false;
         }
 
@@ -73,11 +73,9 @@ class D3ActiveQuery extends ActiveQuery
             ':start' => $start_date,
             ':end' => $end_date
         ];
-        $rangeWhereSql = $fieldName . ' >=:start AND ' .$fieldName. ' < DATE_ADD(:end, INTERVAL 1 DAY)';
-        $query->having($rangeWhereSql,$param);
-
+        $rangeWhereSql = $fieldName . ' >=:start AND ' . $fieldName . ' < DATE_ADD(:end, INTERVAL 1 DAY)';
+        $query->having($rangeWhereSql, $param);
         return true;
-
     }
 
     /**
@@ -86,5 +84,33 @@ class D3ActiveQuery extends ActiveQuery
     public function getRawSql(): string
     {
         return $this->createCommand()->getRawSql();
+    }
+
+    /**
+     * extended method andAndFilterWhere(['like', fieldName, value])
+     * @param string $fieldName sql statement field name
+     * @param string|null $value filter value. If
+     *  - null - ignore
+     *  - with "," for example "value1,value2,..."  - create sql statement {fieldName} in (value1,value2,...)
+     *  - without "," - create sql statement {fieldName} like "%value%"
+     * @return $this|self
+     */
+    public function andFilterWhereLikeCsv(string $fieldName, ?string $value): self
+    {
+        if (!$value) {
+            return $this;
+        }
+        if (strpos($value, ',') !== false) {
+            $list = explode(',', $value);
+            foreach ($list as $key => $item) {
+                if (!$item = trim($item)) {
+                    unset($list[$key]);
+                    continue;
+                }
+                $list[$key] = $item;
+            }
+            return $this->andWhere([$fieldName => $list]);
+        }
+        return $this->andWhere(['like', $fieldName, $value]);
     }
 }
