@@ -15,6 +15,11 @@ use yii\base\Module;
 
 class D3Module extends Module
 {
+	//Default themes
+	const THEME_BLANKON = 'blankon';
+
+	const THEME_ARGON = 'argon';
+
     public $configFilePath;
 
 
@@ -28,13 +33,10 @@ class D3Module extends Module
      */
     public $leftMenu;
 
-    public string $theme = self::THEME_BLANKON;
-
-    //Default 
-    public const THEME_BLANKON = 'blankon';
-
-    public const THEME_ARGON = 'argon';
-
+	/**
+	 * @var string Theme name
+	 */
+    public $theme = self::THEME_BLANKON;
 
     public function __construct($id, $parent = null, $config = [])
     {
