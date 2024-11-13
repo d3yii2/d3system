@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace d3system\actions;
 
-use eaBlankonThema\components\FlashHelper;
+use d3system\helpers\FlashHelper;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
