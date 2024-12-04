@@ -17,6 +17,8 @@ use yii\web\View;
 class D3SystemView extends View
 {
 
+    public $themeName = 'blankon';
+
     /**
      * @var string[]
      */
@@ -82,6 +84,11 @@ class D3SystemView extends View
     {
         $this->setLeftMenu($this->defaultLeftMenu);
         parent::init();
+    }
+
+    public function getThemeName(): string
+    {
+        return $this->themeName;
     }
 
     /**
