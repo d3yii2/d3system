@@ -4,6 +4,7 @@ namespace d3system\commands;
 
 use d3system\compnents\D3CommandTask;
 use Yii;
+use yii\db\Exception;
 
 class DaemonController extends D3CommandController
 {
@@ -55,20 +56,58 @@ class DaemonController extends D3CommandController
      */
     private $loopCntReconnectDb = 0;
 
+    private int $memoryIncreasedPercents = 50;
+    public ?int $memoryUsage = null;
 
     /**
-     * @throws \yii\db\Exception
+     * @var true
+     */
+    private bool $isTerminated = false;
+
+    public function init()
+    {
+        parent::init();
+        set_time_limit(0);
+
+        if (PHP_OS_FAMILY !== 'Windows') {
+            declare(ticks = 1);
+            pcntl_signal(SIGTERM, [$this, 'terminateSigterm'], false   );
+            pcntl_signal(SIGINT, [$this, 'terminateSigint'], false   );
+        }
+    }
+
+    public function terminateSigterm()
+    {
+        $this->out('Daemon terminated by SIGTERM.');
+        $this->isTerminated = true;
+    }
+
+    public function terminateSigint()
+    {
+        $this->out('Daemon terminated by SIGINT.');
+        $this->isTerminated = true;
+    }
+
+    /**
+     * @throws Exception
      */
     public function loop(): bool
     {
-        set_time_limit($this->loopTimeLimit);
+        if ($this->isTerminated) {
+            return false;
+        }
+        if ($this->loopTimeLimit) {
+            set_time_limit($this->loopTimeLimit);
+        }
         $this->loopCnt++;
         $this->loopCntReconnectDb ++;
 
         /**
          * ending every restartAfterSeconds minutes
          */
-        if ($this->loopCnt > $this->loopExitAfterSeconds) {
+        if ($this->loopExitAfterSeconds
+            && $this->loopCnt > $this->loopExitAfterSeconds
+        ) {
             $this->out('Exit for restart. $loopCnt=' . $this->loopCnt);
             return false;
         }
@@ -85,12 +124,22 @@ class DaemonController extends D3CommandController
             Yii::$app->db->open();
         }
 
-        if (memory_get_usage() > $this->memoryLimit) {
-            $this->out('memory limit reached: ' . $this->memoryLimit . ' actual:  ' . memory_get_usage() . ' exit');
+        /**
+         * if memory usage increased by 50 percents, demon restarted
+         */
+        if ($this->memoryUsage !== null
+            && memory_get_usage() > $this->memoryUsage * (100 + $this->memoryIncreasedPercents) / 100
+        ) {
+            $this->out('memory usage decreased: ' . $this->memoryUsage . ' actual:  ' . memory_get_usage() . ' exit');
+            $this->out('$loopCnt: ' . $this->loopCnt);
             return false;
         }
 
+        /** after first full loop save memory usage  */
+        if ($this->loopCnt > 1 && $this->memoryUsage === null) {
+            $this->memoryUsage === memory_get_usage();
+            $this->out('initial memory usage: ' . $this->memoryUsage);
+        }
         return true;
     }
 }
-
