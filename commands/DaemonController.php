@@ -56,7 +56,7 @@ class DaemonController extends D3CommandController
      */
     private $loopCntReconnectDb = 0;
 
-    private int $memoryIncreasedPercents = 50;
+    public int $memoryIncreasedPercents = 50;
     public ?int $memoryUsage = null;
 
     /**
@@ -100,6 +100,9 @@ class DaemonController extends D3CommandController
             set_time_limit($this->loopTimeLimit);
         }
         $this->loopCnt++;
+        if ($this->loopCnt < 2) {
+            return true;
+        }
         $this->loopCntReconnectDb ++;
 
         /**
@@ -127,18 +130,18 @@ class DaemonController extends D3CommandController
         /**
          * if memory usage increased by 50 percents, demon restarted
          */
-        if ($this->memoryUsage !== null
-            && memory_get_usage() > $this->memoryUsage * (100 + $this->memoryIncreasedPercents) / 100
-        ) {
-            $this->out('memory usage decreased: ' . $this->memoryUsage . ' actual:  ' . memory_get_usage() . ' exit');
-            $this->out('$loopCnt: ' . $this->loopCnt);
-            return false;
-        }
 
-        /** after first full loop save memory usage  */
-        if ($this->loopCnt > 1 && $this->memoryUsage === null) {
-            $this->memoryUsage === memory_get_usage();
+        if (!$this->memoryUsage) {
+            $this->memoryUsage = memory_get_usage();
             $this->out('initial memory usage: ' . $this->memoryUsage);
+        } else {
+            $maxMemoryUsage = $this->memoryUsage * (100 + $this->memoryIncreasedPercents)/100;
+            if (memory_get_usage() > $maxMemoryUsage) {
+                $this->out('loopCnt: ' . $this->loopCnt .'. Memory max usage: ' . $maxMemoryUsage . ' actual:  ' . memory_get_usage() . ' exit');
+                $this->out('$loopCnt: ' . $this->loopCnt);
+                Yii::error('memory max usage: ' . $maxMemoryUsage . ' actual:  ' . memory_get_usage() . ' exit');
+                return false;
+            }
         }
         return true;
     }

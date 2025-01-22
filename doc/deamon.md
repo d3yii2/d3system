@@ -59,20 +59,32 @@ class FtpPrintDaemonController extends DaemonController
 ## deamon
 ```editorconfig
 [Unit]
-Description=BouncerPrinter
+Description=KaltePrintDeamon
 
 [Service]
 User=www-data
-# TimeoutStartSec=30
+TimeoutStartSec=30
 Restart=on-failure
 Restart=always
-RestartSec=30s
-#ExecStartPre=
-#ExecStart=/bin/bash /home/chroot/websites/xxxxx/bin/BauncerPrinterPrintDeamon > /home/chroot/websites/xxxxx/runtime/logs/d3printer/atveidnotajs.log
-ExecStart=/bin/bash php /home/chroot/websites/xxxxx/yii d3printer/ftp-print-daemon bouncerPrinter >>  /home/chroot/websites/xxxxx/runtime/logs/d3printer/bouncer.log
-SyslogIdentifier=BouncerPrinter
+RestartSec=5s
+ExecStart=php /home/chroot/websites/cewood/yii d3printer/ftp-print-daemon kaltePrinter
+StandardOutput=append:/home/chroot/websites/cewood/runtime/logs/kalte/printer-spooler.log
+StandardError=append:/home/chroot/websites/cewood/runtime/logs/kalte/printer-spooler-error.log
+SyslogIdentifier=KaltePrintDeamon
+
 #ExecStop=
 
 [Install]
 WantedBy=multi-user.target
+
+```
+
+```shell
+nano /lib/systemd/system/cewood-kalte-printer-spooler.service
+systemctl status cewood-kalte-printer-spooler.service
+systemctl restart cewood-kalte-printer-spooler.service
+systemctl daemon-reload
+
+systemctl list-units | grep "cewoo"
+ 
 ```
