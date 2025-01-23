@@ -139,7 +139,6 @@ class DaemonController extends D3CommandController
             if (memory_get_usage() > $maxMemoryUsage) {
                 $this->out('loopCnt: ' . $this->loopCnt .'. Memory max usage: ' . $maxMemoryUsage . ' actual:  ' . memory_get_usage() . ' exit');
                 $this->out('$loopCnt: ' . $this->loopCnt);
-                Yii::error('memory max usage: ' . $maxMemoryUsage . ' actual:  ' . memory_get_usage() . ' exit');
                 return false;
             }
         }
