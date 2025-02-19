@@ -17,6 +17,7 @@ return [
     'Read' => 'Skatīt',
     'Select' => 'Izvēlēties',
     'Total' => 'Kopā',
+    'Excel' => 'Ekscelis',
     'Cannot update this field.' => 'Nevar labot šo lauku.',
     'Filtered out more than 10 000 records. So many records cannot be exported to excel.'
         => 'Atfiltrēti vairāk nekā 10 000 ierakstu. Tik daudz ierakstu nevar eksportēt uz Eksceli.'
