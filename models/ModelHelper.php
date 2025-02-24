@@ -45,4 +45,17 @@ class ModelHelper
             }
         }
     }
+
+    public static function normalizeIntegerDataAttributes(array $floatAttributes, array &$attributes): void
+    {
+        foreach ($floatAttributes as $attributeName) {
+            if (!isset($attributes[$attributeName])) {
+                $attributes[$attributeName] = 0;
+            } else {
+                $attributes[$attributeName] = is_numeric($attributes[$attributeName]) && filter_var($attributes[$attributeName], FILTER_VALIDATE_INT) !== false
+                    ? (int)$attributes[$attributeName]
+                    : $attributes[$attributeName];
+            }
+        }
+    }
 }
