@@ -31,31 +31,45 @@ class ModelHelper
      * }
      *
      * @param array $floatAttributes
-     * @param array $attributes
+     * @param ?array $attributes
      */
-    public static function normalizeFloatDataAttributes(array $floatAttributes, array &$attributes): void
+    public static function normalizeFloatDataAttributes(
+        array $floatAttributes,
+        ?array &$attributes
+    ): void
     {
+        if (!$attributes) {
+            return;
+        }
         foreach ($floatAttributes as $attributeName) {
             if (!isset($attributes[$attributeName])) {
-                $attributes[$attributeName] = 0;
-            } else {
-                $attributes[$attributeName] = is_numeric($attributes[$attributeName])
-                    ? (float)$attributes[$attributeName]
-                    : $attributes[$attributeName];
+                continue;
             }
+            $attributes[$attributeName] = is_numeric($attributes[$attributeName])
+                ? (float)$attributes[$attributeName]
+                : $attributes[$attributeName];
         }
     }
 
-    public static function normalizeIntegerDataAttributes(array $floatAttributes, array &$attributes): void
+    public static function normalizeIntegerDataAttributes(
+        array $floatAttributes,
+        ?array &$attributes
+    ): void
     {
+        if (!$attributes) {
+            return;
+        }
         foreach ($floatAttributes as $attributeName) {
             if (!isset($attributes[$attributeName])) {
-                $attributes[$attributeName] = 0;
-            } else {
-                $attributes[$attributeName] = is_numeric($attributes[$attributeName]) && filter_var($attributes[$attributeName], FILTER_VALIDATE_INT) !== false
-                    ? (int)$attributes[$attributeName]
-                    : $attributes[$attributeName];
+                continue;
             }
+            $attributes[$attributeName] = (
+                is_numeric($attributes[$attributeName])
+                && filter_var($attributes[$attributeName], FILTER_VALIDATE_INT) !== false
+            )
+            ? (int)$attributes[$attributeName]
+            : $attributes[$attributeName];
+
         }
     }
 }
