@@ -35,7 +35,7 @@ class D3SystemView extends View
     public $settings = [];
 
     /** @var string */
-    public $defaultAssetsClass = 'ea\app\AppAsset';
+    public $defaultAssetsClass;
 
     /** @var string */
     private $leftMenuCode;
