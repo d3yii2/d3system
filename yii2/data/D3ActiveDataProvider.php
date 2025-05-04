@@ -6,24 +6,40 @@ namespace d3system\yii2\data;
 
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\data\ActiveDataProvider;
 use yii\db\QueryInterface;
 
+/**
+ *
+ *
+ * @property-write mixed $columnFooter
+ */
 class D3ActiveDataProvider extends ActiveDataProvider
 {
 
     /**
      * @var QueryInterface the query that is used to fetch [[totalCount]]
      * if it is not explicitly set.
+     * Example:
+     *   $totalQuery = (clone $query)
+     *     ->select(['COUNT(DISTINCT cwbr_product.id) AS countRows']);
+     *  return new D3ActiveDataProvider([
+     *       'totalQuery' => $totalQuery
+     *       'query' => $query,
+     *   ]);
      */
     public $totalQuery;
 
     /** @var string[]  */
-    public $totalAttributes = [];
+    public array $totalAttributes = [];
 
     /** @var int[]|float[]  */
-    private $totals = [];
+    private array $totals = [];
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function setPagination($value)
     {
         if (is_array($value)) {
@@ -40,6 +56,9 @@ class D3ActiveDataProvider extends ActiveDataProvider
 
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function setSort($value)
     {
         if (is_array($value)) {
