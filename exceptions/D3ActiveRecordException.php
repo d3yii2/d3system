@@ -29,11 +29,8 @@ class D3ActiveRecordException extends Exception
         string $flashMessage = null,
         bool $loggingMessage = true,
         $flashAttributes = false,
-        string $errorCategory = ''
+        string $errorCategory = 'application'
     ) {
-        if (!$errorCategory) {
-            $errorCategory = 'application';
-        }
 
         $modelErrors = 'Can\'t save ' . get_class($model);
         if ($flashMessage) {
