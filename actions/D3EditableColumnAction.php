@@ -5,6 +5,8 @@ namespace d3system\actions;
 use Exception;
 use kartik\grid\EditableColumnAction;
 use Yii;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\web\HttpException;
 
 
@@ -39,6 +41,10 @@ class D3EditableColumnAction extends EditableColumnAction
     public $methodName = 'findModel';
 
 
+    /**
+     * @var null|callable callable for processing own update or insert
+     */
+    public $processCallable;
 
     public function validateEditable()
     {
@@ -48,13 +54,26 @@ class D3EditableColumnAction extends EditableColumnAction
             if (!isset($requestPost['hasEditable'])) {
                 return $this->cannotUpdate();
             }
-            $id = $requestPost['editableKey'];
-            $model = $this->findD3Model($id);
-            $forbiddenFields = array_merge(
-                $model::primaryKey(),
-                $this->editAbleFieldForbiddenDefault,
-                $this->editAbleFieldsForbidden
-            );
+            $key = ArrayHelper::getValue($requestPost, 'editableKey');
+            if (!ctype_digit($key)) {
+                $key = Json::decode($key);
+            }
+            $modelRecord = $this->findD3Model($key);
+            $model = new $this->modelClass();
+
+            if ($this->processCallable) {
+                /** for save primary key fields no forbidden*/
+                $forbiddenFields = array_merge(
+                    $this->editAbleFieldForbiddenDefault,
+                    $this->editAbleFieldsForbidden
+                );
+            } else {
+                $forbiddenFields = array_merge(
+                    $model::primaryKey(),
+                    $this->editAbleFieldForbiddenDefault,
+                    $this->editAbleFieldsForbidden
+                );
+            }
             $editableAttribute = $requestPost['editableAttribute'];
 
 
@@ -66,6 +85,9 @@ class D3EditableColumnAction extends EditableColumnAction
             }
             if (!$model->isAttributeSafe($editableAttribute)) {
                 return $this->cannotUpdate();
+            }
+            if ($this->processCallable && is_callable($this->processCallable, true)) {
+                return call_user_func($this->processCallable, $modelRecord, $requestPost, $key);
             }
 
             return parent::validateEditable();
@@ -88,11 +110,11 @@ class D3EditableColumnAction extends EditableColumnAction
     /**
      * Finds the CwpalletPallet model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param integer|array $id
      * @return object the loaded model
      * @throws HttpException if the model cannot be found
      */
-    public function findD3Model(int $id): object
+    public function findD3Model($id): ?object
     {
 
         if (method_exists($this->controller, $this->methodName)) {
