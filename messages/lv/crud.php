@@ -22,5 +22,7 @@ return [
     'Filtered out more than 10 000 records. So many records cannot be exported to excel.'
         => 'Atfiltrēti vairāk nekā 10 000 ierakstu. Tik daudz ierakstu nevar eksportēt uz Eksceli.',
     'Edit' => 'Labot',
-    'Settings' => 'Iestatījumi'
+    'Settings' => 'Iestatījumi',
+    'The number format is invalid. Ensure it has at most {integers} digits with up to {decimals} decimal places.'
+    => 'Kļūdains skaitļa formāts. Pārliecinieties, vai tajā ir ne {integers} kā 10 cipari pirms komata un ne vairāk kā {decimals} zīmēm aiz komata.'
 ];
