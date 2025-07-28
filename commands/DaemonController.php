@@ -41,7 +41,14 @@ class DaemonController extends D3CommandController
     //@TODO
     public $loopExitAfterSeconds = 20 * 60; //20 min
     public $statusReadLogSeconds = 60;
-    
+
+    public string $monoLogRuntimeDirectory = 'logs/daemon';
+    public ?int $monoLogName = null;
+    public string $monoLogFileName = 'daemon';
+    public int $monoLogMaxFiles = 7;
+
+    private ?d3logger\D3Monolog $mLogCompnent = null;
+
     /**
      * @var D3CommandTask $task
      * Tasks are extended in modules, e.g. d3yii2\d3printer\logic\tasks\FtpPrintTask
@@ -74,6 +81,23 @@ class DaemonController extends D3CommandController
             pcntl_signal(SIGTERM, [$this, 'terminateSigterm'], false   );
             pcntl_signal(SIGINT, [$this, 'terminateSigint'], false   );
         }
+
+        if ($this->monoLogName) {
+            $this->mLogCompnent = Yii::createObject([
+                'class' => 'd3logger\D3Monolog',
+                'name' => $this->monoLogName,
+                'fileName' => $this->monoLogFileName,
+                'directory' => $this->monoLogRuntimeDirectory,
+                'maxFiles' => $this->monoLogMaxFiles,
+            ]);
+        }
+    }
+
+    public function mLogInfo($message, $context): void
+    {
+        if ($this->mLogCompnent) {
+            $this->mLogCompnent->info($message, $context);
+        }
     }
 
     public function terminateSigterm()
@@ -86,6 +110,32 @@ class DaemonController extends D3CommandController
     {
         $this->out('Daemon terminated by SIGINT.');
         $this->isTerminated = true;
+    }
+
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        $this->mLogInfo(
+            'beforeAction',
+            [
+                'action' => $action,
+                'class' => get_class($action->controller),
+            ]
+        );
+        return true;
+    }
+
+    public function afterAction($action, $result)
+    {
+        $this->mLogInfo(
+            'beforeAction',
+            [
+                'action' => $action,
+            ]
+        );
+        return parent::afterAction($action, $result);
     }
 
     /**
