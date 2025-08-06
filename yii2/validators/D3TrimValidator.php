@@ -10,12 +10,12 @@ class D3TrimValidator extends TrimValidator
     public bool $trimOnlyStringValues = false;
 
     /**
-     * Converts given value to string and strips declared characters.
+     * Converts a given value to string and strips declared characters.
      *
      * @param mixed $value the value to strip
-     * @return string
+     * @return string|array|object|null
      */
-    protected function trimValue($value): ?string
+    protected function trimValue($value)
     {
         if ($this->trimOnlyStringValues && !is_string($value)) {
             return $value;
