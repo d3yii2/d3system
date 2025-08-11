@@ -5,6 +5,7 @@ namespace d3system\commands;
 use d3system\compnents\D3CommandTask;
 use Yii;
 use yii\db\Exception;
+use d3logger\D3Monolog;
 
 class DaemonController extends D3CommandController
 {
@@ -12,42 +13,41 @@ class DaemonController extends D3CommandController
      * @var int $memoryLimit
      */
     public $memoryLimit = 268435456; //256MB
-    
+
     /**
      * @var float|int $sleepAfterMicroseconds
      */
     public $sleepAfterMicroseconds = 10 * 1000000; //10 seconds
-    
+
     /**
      * @var int $loopTimeLimit
      */
     public $loopTimeLimit = 60; //60 seconds
-    
+
     /**
      * @var int $idleAfterSeconds
      */
     public $idleAfterSeconds = 60;
-    
+
     /**
      * @var int $idleRequireReadSeconds
      */
     public $idleRequireReadSeconds = 60;
-    
+
     /**
      * @var bool|null $recconectDb
      */
     public $recconectDb;
-    
+
     //@TODO
     public $loopExitAfterSeconds = 20 * 60; //20 min
     public $statusReadLogSeconds = 60;
 
     public string $monoLogRuntimeDirectory = 'logs/daemon';
-    public ?int $monoLogName = null;
+    public ?string $monoLogName = null;
     public string $monoLogFileName = 'daemon';
     public int $monoLogMaxFiles = 7;
-
-    private ?d3logger\D3Monolog $mLogCompnent = null;
+    private ?D3Monolog $mLogCompnent = null;
 
     /**
      * @var D3CommandTask $task
@@ -84,7 +84,7 @@ class DaemonController extends D3CommandController
 
         if ($this->monoLogName) {
             $this->mLogCompnent = Yii::createObject([
-                'class' => 'd3logger\D3Monolog',
+                'class' => D3Monolog::class,
                 'name' => $this->monoLogName,
                 'fileName' => $this->monoLogFileName,
                 'directory' => $this->monoLogRuntimeDirectory,
