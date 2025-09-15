@@ -47,7 +47,7 @@ class DaemonController extends D3CommandController
     public ?string $monoLogName = null;
     public string $monoLogFileName = 'daemon';
     public int $monoLogMaxFiles = 7;
-    private ?D3Monolog $mLogCompnent = null;
+    public ?D3Monolog $mLogCompnent = null;
 
     /**
      * @var D3CommandTask $task
@@ -93,7 +93,7 @@ class DaemonController extends D3CommandController
         }
     }
 
-    public function mLogInfo($message, $context): void
+    public function mLogInfo($message, $context = []): void
     {
         if ($this->mLogCompnent) {
             $this->mLogCompnent->info($message, $context);
@@ -110,32 +110,6 @@ class DaemonController extends D3CommandController
     {
         $this->out('Daemon terminated by SIGINT.');
         $this->isTerminated = true;
-    }
-
-    public function beforeAction($action)
-    {
-        if (!parent::beforeAction($action)) {
-            return false;
-        }
-        $this->mLogInfo(
-            'beforeAction',
-            [
-                'action' => $action,
-                'class' => get_class($action->controller),
-            ]
-        );
-        return true;
-    }
-
-    public function afterAction($action, $result)
-    {
-        $this->mLogInfo(
-            'beforeAction',
-            [
-                'action' => $action,
-            ]
-        );
-        return parent::afterAction($action, $result);
     }
 
     /**
