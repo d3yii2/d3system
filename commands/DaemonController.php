@@ -64,7 +64,7 @@ class DaemonController extends D3CommandController
     /**
      * @var true
      */
-    private bool $isTerminated = false;
+    public bool $isTerminated = false;
 
     /**
      * @throws InvalidConfigException
@@ -167,5 +167,17 @@ class DaemonController extends D3CommandController
             }
         }
         return true;
+    }
+
+    public function sleep(int $seconds): void
+    {
+        while($seconds > 0){
+            $seconds--;
+            usleep(1000000);
+            if ($this->isTerminated) {
+                $this->mLogInfo('Sleep terminated.');
+                return;
+            }
+        }
     }
 }
