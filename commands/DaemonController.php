@@ -2,8 +2,8 @@
 
 namespace d3system\commands;
 
-use d3system\compnents\D3CommandTask;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use d3logger\D3Monolog;
 
@@ -22,26 +22,25 @@ class DaemonController extends D3CommandController
     /**
      * @var int $loopTimeLimit
      */
-    public $loopTimeLimit = 60; //60 seconds
+    public int $loopTimeLimit = 60; //60 seconds
 
     /**
      * @var int $idleAfterSeconds
      */
-    public $idleAfterSeconds = 60;
+    public int $idleAfterSeconds = 60;
 
     /**
      * @var int $idleRequireReadSeconds
      */
-    public $idleRequireReadSeconds = 60;
+    public int $idleRequireReadSeconds = 60;
 
     /**
      * @var bool|null $recconectDb
      */
-    public $recconectDb;
+    public ?bool $recconectDb = null;
 
     //@TODO
     public $loopExitAfterSeconds = 20 * 60; //20 min
-    public $statusReadLogSeconds = 60;
 
     public string $monoLogRuntimeDirectory = 'logs/daemon';
     public ?string $monoLogName = null;
@@ -49,15 +48,11 @@ class DaemonController extends D3CommandController
     public int $monoLogMaxFiles = 7;
     public ?D3Monolog $mLogCompnent = null;
 
-    /**
-     * @var D3CommandTask $task
-     * Tasks are extended in modules, e.g. d3yii2\d3printer\logic\tasks\FtpPrintTask
-     */
-    protected $task;
+
     /**
      * @var int
      */
-    private $loopCnt = 0;
+    private int $loopCnt = 0;
     /**
      * @var mixed
      */
@@ -71,6 +66,9 @@ class DaemonController extends D3CommandController
      */
     private bool $isTerminated = false;
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function init()
     {
         parent::init();
@@ -100,15 +98,17 @@ class DaemonController extends D3CommandController
         }
     }
 
-    public function terminateSigterm()
+    public function terminateSigterm(): void
     {
         $this->out('Daemon terminated by SIGTERM.');
+        $this->mLogInfo('Daemon terminated by SIGTERM.');
         $this->isTerminated = true;
     }
 
-    public function terminateSigint()
+    public function terminateSigint(): void
     {
         $this->out('Daemon terminated by SIGINT.');
+        $this->mLogInfo('Daemon terminated by SIGINT.');
         $this->isTerminated = true;
     }
 
