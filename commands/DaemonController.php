@@ -89,6 +89,7 @@ class DaemonController extends D3CommandController
                 'maxFiles' => $this->monoLogMaxFiles,
             ]);
         }
+        $this->mLogInfo('Daemon init');
     }
 
     public function mLogInfo($message, $context = []): void
@@ -139,7 +140,9 @@ class DaemonController extends D3CommandController
             return false;
         }
 
-        usleep($this->sleepAfterMicroseconds);
+        if (!$this->usleep($this->sleepAfterMicroseconds)) {
+            return false;
+        }
 
         if ($this->loopCntReconnectDb > 60) {
             $this->loopCntReconnectDb = 0;
@@ -157,7 +160,7 @@ class DaemonController extends D3CommandController
 
         if (!$this->memoryUsage) {
             $this->memoryUsage = memory_get_usage();
-            $this->out('initial memory usage: ' . $this->memoryUsage);
+            $this->out('memory usage: ' . $this->memoryUsage);
         } else {
             $maxMemoryUsage = $this->memoryUsage * (100 + $this->memoryIncreasedPercents)/100;
             if (memory_get_usage() > $maxMemoryUsage) {
@@ -169,15 +172,36 @@ class DaemonController extends D3CommandController
         return true;
     }
 
-    public function sleep(int $seconds): void
+    public function sleep(int $seconds): bool
     {
         while($seconds > 0){
             $seconds--;
             usleep(1000000);
+            $this->out('sleep ' . $seconds . ' sec');;
             if ($this->isTerminated) {
                 $this->mLogInfo('Sleep terminated.');
-                return;
+                return false;
             }
         }
+        return true;
+    }
+
+    public function usleep(int $microseconds): bool
+    {
+        while($microseconds > 0){
+            $microseconds -= 1000000;
+            usleep(1000000);
+            if ($this->isTerminated) {
+                $this->mLogInfo('Sleep terminated.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function out($string, int $settings = 0): void
+    {
+        parent::out($string, $settings);
+        $this->mLogInfo($string);
     }
 }
