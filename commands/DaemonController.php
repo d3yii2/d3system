@@ -177,7 +177,6 @@ class DaemonController extends D3CommandController
         while($seconds > 0){
             $seconds--;
             usleep(1000000);
-            $this->out('sleep ' . $seconds . ' sec');;
             if ($this->isTerminated) {
                 $this->mLogInfo('Sleep terminated.');
                 return false;
