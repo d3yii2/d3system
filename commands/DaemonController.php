@@ -2,6 +2,7 @@
 
 namespace d3system\commands;
 
+use DateTime;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Exception;
@@ -65,6 +66,11 @@ class DaemonController extends D3CommandController
      * @var true
      */
     public bool $isTerminated = false;
+    /**
+     * @var false|string
+     */
+    private ?string $monoLogDate = null;
+    private ?DateTime $startedAt = null;
 
     /**
      * @throws InvalidConfigException
@@ -80,16 +86,10 @@ class DaemonController extends D3CommandController
             pcntl_signal(SIGINT, [$this, 'terminateSigint'], false   );
         }
 
-        if ($this->monoLogName) {
-            $this->mLogCompnent = Yii::createObject([
-                'class' => D3Monolog::class,
-                'name' => $this->monoLogName,
-                'fileName' => $this->monoLogFileName,
-                'directory' => $this->monoLogRuntimeDirectory,
-                'maxFiles' => $this->monoLogMaxFiles,
-            ]);
-        }
+        $this->mLogInit();
         $this->mLogInfo('Daemon init');
+
+        $this->startedAt = new DateTime();
     }
 
     public function mLogInfo($message, $context = []): void
@@ -115,6 +115,7 @@ class DaemonController extends D3CommandController
 
     /**
      * @throws Exception
+     * @throws InvalidConfigException
      */
     public function loop(): bool
     {
@@ -128,16 +129,19 @@ class DaemonController extends D3CommandController
         if ($this->loopCnt < 2) {
             return true;
         }
+        $this->mLogInit();
         $this->loopCntReconnectDb ++;
 
         /**
          * ending every restartAfterSeconds minutes
          */
-        if ($this->loopExitAfterSeconds
-            && $this->loopCnt > $this->loopExitAfterSeconds
-        ) {
-            $this->out('Exit for restart. $loopCnt=' . $this->loopCnt);
-            return false;
+
+        if ($this->loopExitAfterSeconds) {
+            $seconds = (new DateTime())->getTimestamp() - $this->startedAt->getTimestamp();
+            if ($seconds > $this->loopExitAfterSeconds) {
+                $this->out('Exit for restart. $loopCnt=' . $this->loopCnt);
+                return false;
+            }
         }
 
         if (!$this->usleep($this->sleepAfterMicroseconds)) {
@@ -151,6 +155,7 @@ class DaemonController extends D3CommandController
             $this->out('$loopCnt: ' . $this->loopCnt);
 
             Yii::$app->db->close();
+            sleep(1);
             Yii::$app->db->open();
         }
 
@@ -202,5 +207,29 @@ class DaemonController extends D3CommandController
     {
         parent::out($string, $settings);
         $this->mLogInfo($string);
+    }
+
+    /**
+     * inicialize monolog componenti
+     * katrai dienai savs logfails tiek izveidots
+     * @return void
+     * @throws InvalidConfigException
+     */
+    public function mLogInit(): void
+    {
+        if (!$this->monoLogName) {
+            return;
+        }
+        if ($this->monoLogDate === date('Y-m-d')) {
+            return;
+        }
+        $this->monoLogDate = date('Y-m-d');
+        $this->mLogCompnent = Yii::createObject([
+            'class' => D3Monolog::class,
+            'name' => $this->monoLogName,
+            'fileName' => $this->monoLogFileName,
+            'directory' => $this->monoLogRuntimeDirectory,
+            'maxFiles' => $this->monoLogMaxFiles,
+        ]);
     }
 }
