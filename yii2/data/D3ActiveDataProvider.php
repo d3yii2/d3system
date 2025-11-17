@@ -11,7 +11,18 @@ use yii\data\ActiveDataProvider;
 use yii\db\QueryInterface;
 
 /**
+ * @deprecated all can do in search mosel:
+ * private  $totalQuery = null;
+ * public ?self $totalsRow = null;
  *
+ * $query = $this->query();
+ * if (!$this->totalsRow = $this->totalQuery->one()) {
+ *    throw new Exception('No totals');
+ * }
+ * return new ActiveDataProvider([
+ *    'query' => $query,
+ *    'totalCount' => $this->totalsRow->countRows,
+ * ]);
  *
  * @property-write mixed $columnFooter
  */
