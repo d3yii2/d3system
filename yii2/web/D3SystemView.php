@@ -139,7 +139,7 @@ class D3SystemView extends View
         $this->pageHeaderButtons[] = $pageButton;
     }
 
-    public function addBackButtons($url, string $label = null): void
+    public function addBackButtons($url, ?string $label = null): void
     {
         $this->backButtons[] = [
             'url' => $url,
