@@ -4,6 +4,8 @@
 namespace d3system\yii2\log;
 
 
+use Throwable;
+use yii\helpers\VarDumper;
 use yii\log\FileTarget;
 use yii\log\Logger;
 use yii\web\Request;
@@ -24,7 +26,14 @@ class D3FileTarget extends FileTarget
     public function formatMessage($message): string
     {
         [$text, $level, $category, $timestamp] = $message;
-
+        if (!is_string($text)) {
+            // exceptions may not be serializable if in the call stack somewhere is a Closure
+            if ($text instanceof \Exception || $text instanceof Throwable) {
+                $text = (string) $text;
+            } else {
+                $text = VarDumper::export($text);
+            }
+        }
         $rowText = '';
 
         if($this->isShowInfo('time')) {
