@@ -34,17 +34,29 @@ class D3ActiveRecordException extends Exception
 
         $modelErrors = 'Can\'t save ' . get_class($model);
         if ($flashMessage) {
-            $modelErrors .=  PHP_EOL . ' Flash Message: ' . $flashMessage;
+            $modelErrors .=  PHP_EOL . ' Flash: ' . $flashMessage;
         }
+        $attributesError = [];
+        foreach ($model->getErrors() as $attribute => $attributeErrors) {
+            $attributeLabel = $model->getAttributeLabel($attribute);
+            foreach ($attributeErrors as $error) {
+                $attributesError[] = $attributeLabel . ': "' . $error . '"';
+            }
+        }
+        $modelErrors .= PHP_EOL . implode(PHP_EOL, $attributesError);
 
-        $modelErrors .= PHP_EOL
-            . ' Errors: ' . VarDumper::export($model->getErrors()) . PHP_EOL
-            . ' Attributes: ' . VarDumper::export($model->attributes);
         if ($flashMessage) {
             $modelErrors .= PHP_EOL . 'flashMessage: ' . $flashMessage;
         }
         if ($loggingMessage !== false) {
-            Yii::error($modelErrors, $errorCategory);
+            //Yii::error($modelErrors, $errorCategory);
+            Yii::error(
+                [
+                    'message' => $modelErrors,
+                    'extra' => VarDumper::export($model->attributes)
+                ],
+                $errorCategory
+            );
         }
 
         $isConsole = Yii::$app instanceof Application;
