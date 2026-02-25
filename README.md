@@ -57,9 +57,49 @@ $config = [
 ```
 
 ## Components
+### D3Flag
+configuration:
+```php
+'components' => [
+    // ... existing components ...
+    'flag' => [
+        'class' => \app\components\Flag::class,
+        'flags' => [
+            // simplest boolean
+            'newCheckout' => true,
 
+            // enabled but only for certain users
+            'betaProfile' => [
+                'enabled' => true,
+                'users' => [1, 2, 10],
+            ],
 
+            // percentage rollout (by userId)
+            'searchV2' => [
+                'enabled' => true,
+                'percent' => 20, // 20% of users
+            ],
 
+            // enabled only if user has RBAC permission/role
+            'adminPanelV2' => [
+                'enabled' => true,
+                'roles' => ['admin'],
+            ],
+        ],
+        'cacheId' => 'cache',
+        'cacheTtl' => 30,
+    ],
+],
+```
+
+Usage
+```php
+if (Yii::$app->flag->enabled('newCheckout')) {
+    // new flow
+} else {
+    // old flow
+}
+````
 ### ModelsList
 
 Configuration:
