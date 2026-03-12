@@ -2,12 +2,11 @@
 
 namespace d3system\exceptions;
 
-use eaBlankonThema\components\FlashHelper;
+use d3system\helpers\FlashHelper;
 use Yii;
 use yii\base\Exception;
 use yii\console\Application;
 use yii\db\ActiveRecord;
-use yii\helpers\VarDumper;
 
 /**
  * Exception for logging and displaying in flash active record errors
@@ -49,11 +48,10 @@ class D3ActiveRecordException extends Exception
             $modelErrors .= PHP_EOL . 'flashMessage: ' . $flashMessage;
         }
         if ($loggingMessage !== false) {
-            //Yii::error($modelErrors, $errorCategory);
             Yii::error(
                 [
                     'message' => $modelErrors,
-                    'extra' => VarDumper::export($model->attributes)
+                    'extra' => $model->attributes
                 ],
                 $errorCategory
             );
