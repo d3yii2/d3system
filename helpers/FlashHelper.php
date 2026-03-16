@@ -60,10 +60,7 @@ class FlashHelper
                 self::LOGGING_CATEGORY_FLASH
             );
         } else {
-            Yii::error(
-                $message,
-                self::LOGGING_CATEGORY_ERROR
-            );
+            Yii::error($e);
         }
     }
 
