@@ -203,10 +203,14 @@ class DaemonController extends D3CommandController
         return true;
     }
 
-    public function out($string, int $settings = 0): void
+    public function out(
+        $string,
+        int $settings = 0,
+        array $mlogContext = []
+    ): void
     {
         parent::out($string, $settings);
-        $this->mLogInfo($string);
+        $this->mLogInfo($string, $mlogContext);
     }
 
     /**
