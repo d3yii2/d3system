@@ -2,12 +2,7 @@
 namespace d3system\behaviors;
 
 use d3system\exceptions\D3Exception;
-use omnilight\datetime\DateTimeAttribute;
 use omnilight\datetime\DateTimeBehavior;
-use Yii;
-use yii\base\Event;
-use yii\base\InvalidConfigException;
-use yii\validators\DateValidator;
 
 /**
  * Class DateTimeBehavior

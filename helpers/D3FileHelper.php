@@ -166,7 +166,7 @@ class D3FileHelper
      * @param string|null $path
      * @return string
      */
-    public static function getBasename(string $path = null): string
+    public static function getBasename(?string $path = null): string
     {
         return basename($path);
     }

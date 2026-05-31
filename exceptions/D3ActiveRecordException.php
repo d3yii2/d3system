@@ -26,7 +26,7 @@ class D3ActiveRecordException extends Exception
      */
     public function __construct(
         $model,
-        string $flashMessage = null,
+        ?string $flashMessage = null,
         bool $loggingMessage = true,
         $flashAttributes = false,
         string $errorCategory = 'application'

@@ -59,7 +59,7 @@ class D3Caller extends Component
         string $taskName,
         array  $parameters = [],
         array  $args = [],
-        string $className = null
+        ?string $className = null
     ): array
     {
         $data = [];
