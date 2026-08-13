@@ -58,16 +58,12 @@ class Optional {
 
     public function orElse($other)
     {
-        return $this -> value !== null
-            ? $this->value
-            : $other;
+        return $this->value ?? $other;
     }
 
     public function orElseGet(callable $other)
     {
-        return $this -> value !== null
-                ? $this -> value
-                : $other();
+        return $this->value ?? $other();
     }
 
     public function orElseThrow(callable $exceptionSupplier)
