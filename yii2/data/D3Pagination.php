@@ -61,7 +61,10 @@ class D3Pagination extends Pagination
         if ($this->cacheData) {
             return $this->cacheData;
         }
-        return $this->cacheData = Yii::$app->cache->get($this->buildKey());
+        if (!$data = Yii::$app->cache->get($this->buildKey())) {
+            $data = [];
+        }
+        return $this->cacheData = $data;
     }
 
     /**
