@@ -16,6 +16,11 @@ use Yii;
  */
 class LayoutController extends Controller
 {
+
+    public const FILTERS = 'filters';
+    public const XLS = 'xls';
+    public const CSV = 'csv';
+
     protected $widget;
 
     /** @var bool */
