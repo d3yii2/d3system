@@ -31,10 +31,15 @@ class FlashHelper
         $isUserException = $exceptionClass === UserException::class
             || $exceptionClass === D3UserAlertException::class;
 
-        self::addFlash(
-            ThAlert::TYPE_DANGER,
-            $flashMessage ?? $exceptionMessage
-        );
+        if (!$flashMessage && method_exists($e, 'getDisplayMessage')) {
+            $flashMessage = $e->getDisplayMessage();
+        }
+
+        if (!$flashMessage && method_exists($e, 'getMessage')) {
+            $flashMessage = $e->getMessage();
+        }
+
+        self::addFlash(ThAlert::TYPE_DANGER, $flashMessage);
 
         $messageList = [];
         if ($errorMessage) {
