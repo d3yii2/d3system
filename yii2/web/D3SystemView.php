@@ -4,6 +4,7 @@ namespace d3system\yii2\web;
 
 
 use cornernote\returnurl\ReturnUrl;
+use ea\app\AppAsset;
 use eaBlankonThema\yii2\web\LayoutController;
 use eaBlankonThema\widget\ThButton;
 use eaBlankonThema\widget\ThButtonDropDown;
@@ -35,7 +36,7 @@ class D3SystemView extends View
     public $settings = [];
 
     /** @var string */
-    public $defaultAssetsClass;
+    public $defaultAssetsClass = AppAsset::class;
 
     /** @var string */
     private $leftMenuCode;
@@ -373,8 +374,9 @@ class D3SystemView extends View
     {
         /** @var AssetBundle $assetClass */
         $assetClass = $this->defaultAssetsClass;
-        return $assetClass::register($this);
-
+        if (class_exists($assetClass)) {
+            return $assetClass::register($this);
+        }
     }
 
 }
